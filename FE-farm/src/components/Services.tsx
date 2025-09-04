@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Dna, 
-  Stethoscope, 
-  GraduationCap, 
+import {
+  Dna,
+  Stethoscope,
+  GraduationCap,
   ShieldCheck,
   ArrowRight,
   Users
@@ -53,7 +53,7 @@ const Services = () => {
             Giải pháp toàn diện cho chăn nuôi
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            Từ tư vấn chọn giống đến hỗ trợ kỹ thuật, chúng tôi đồng hành cùng bạn 
+            Từ tư vấn chọn giống đến hỗ trợ kỹ thuật, chúng tôi đồng hành cùng bạn
             trong toàn bộ quá trình chăn nuôi
           </p>
         </div>
@@ -100,14 +100,14 @@ const Services = () => {
               Gói dịch vụ toàn diện
             </h3>
             <p className="text-primary-foreground/90 text-lg mb-8">
-              Kết hợp tất cả dịch vụ trong một gói với mức giá ưu đãi. 
+              Kết hợp tất cả dịch vụ trong một gói với mức giá ưu đãi.
               Được hàng trăm trang trại tin tưởng lựa chọn.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button variant="cta" size="lg" className="bg-white text-primary hover:bg-white/90">
                 Xem gói dịch vụ
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary">
+              <Button variant="outline" size="lg" className="border-white text-gray-600  ">
                 Tư vấn miễn phí
               </Button>
             </div>
