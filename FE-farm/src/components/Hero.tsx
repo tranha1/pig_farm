@@ -5,7 +5,7 @@ import heroImage from "@/assets/hero-farm.jpg";
 const Hero = () => {
   const features = [
     "Giống GGP, GP, PS chất lượng cao",
-    "Quy trình kiểm dịch nghiêm ngặt", 
+    "Quy trình kiểm dịch nghiêm ngặt",
     "Tư vấn kỹ thuật chuyên nghiệp",
     "Hỗ trợ 24/7"
   ];
@@ -13,13 +13,13 @@ const Hero = () => {
   return (
     <section className="relative min-h-[80vh] flex items-center">
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ 
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${heroImage})` 
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${heroImage})`
         }}
       />
-      
+
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -33,7 +33,7 @@ const Hero = () => {
                 <span className="text-accent block">Chất Lượng Cao</span>
               </h1>
               <p className="text-xl text-gray-200 leading-relaxed">
-                Chuyên cung cấp giống GGP, GP, PS với quy trình kiểm dịch quốc tế. 
+                Chuyên cung cấp giống GGP, GP, PS với quy trình kiểm dịch quốc tế.
                 Đồng hành cùng nông dân Việt Nam phát triển chăn nuôi bền vững.
               </p>
             </div>
@@ -54,7 +54,7 @@ const Hero = () => {
                 Yêu cầu báo giá ngay
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-foreground">
+              <Button variant="outline" size="lg" className="border-white text-gray-600  text-foreground">
                 Tìm hiểu thêm
               </Button>
             </div>
