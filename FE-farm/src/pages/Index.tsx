@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Products from "@/components/Products";
 import Footer from "@/components/Footer";
-import I18nDebugPanel from "@/components/I18nDebugPanel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -91,10 +90,6 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      
-      {/* Debug Panel - Remove in production */}
-      <I18nDebugPanel />
-      
       <main>
         <Hero />
         
