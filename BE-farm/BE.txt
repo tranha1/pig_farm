@@ -1,0 +1,130 @@
+[Khách truy cập]
+      |
+      v
+  ┌── Trang chủ (Home)
+  │     ├─ Giới thiệu nhanh, USP
+  │     ├─ Liên kết nhanh (Sản phẩm / Dịch vụ / Tin tức / Liên hệ)
+  │     └─ CTA: Yêu cầu báo giá / Liên hệ
+  │
+  ├── Giới thiệu (About)
+  │     ├─ Lịch sử, tầm nhìn, sứ mệnh
+  │     ├─ Đội ngũ lãnh đạo
+  │     └─ Bản đồ cơ sở chăn nuôi
+  │
+  ├── Sản phẩm / Giống (Catalog)
+  │     ├─ Danh mục giống (GGP, GP, PS)
+  │     ├─ Trang chi tiết giống
+  │     │      ├─ Thông tin di truyền
+  │     │      ├─ Ảnh / Video
+  │     │      ├─ File PDF / Spec sheet
+  │     │      └─ CTA: Yêu cầu báo giá
+  │     └─ Bộ lọc + So sánh giống
+  │
+  ├── Quy trình & Kiểm dịch (Process)
+  │     ├─ Sơ đồ quy trình nhập - cách ly - xét nghiệm - giao hàng
+  │     └─ Danh sách bệnh đã test + chứng nhận
+  │
+  ├── Dịch vụ
+  │     ├─ Tư vấn di truyền
+  │     ├─ Hỗ trợ thú y
+  │     ├─ Đào tạo vận hành
+  │     └─ Gói dịch vụ (chi tiết + đăng ký)
+  │
+  ├── Tin tức / Blog / Case Study
+  │     ├─ Tin thị trường
+  │     ├─ Kỹ thuật chăn nuôi
+  │     ├─ Chính sách nhà nước
+  │     └─ Case thành công / khách hàng
+  │
+  ├── Tuyển dụng
+  │     ├─ Danh sách vị trí
+  │     └─ Form ứng tuyển (upload CV)
+  │
+  ├── Liên hệ
+  │     ├─ Form liên hệ (tên, sđt, email, nhu cầu)
+  │     ├─ Nút gọi / Zalo / WhatsApp
+  │     └─ Bản đồ văn phòng
+  │
+  ├── Đặt lịch tham quan trại
+  │     └─ Lịch trống (Calendar) + Form đăng ký
+  │
+  └── Chính sách & pháp lý
+        ├─ Điều khoản sử dụng
+        ├─ Chính sách bảo mật
+        └─ Cookie policy
+
+[Admin / Nhân viên công ty]
+      |
+      v
+   ┌── CMS / Quản trị nội dung
+   │     ├─ Quản lý sản phẩm / giống
+   │     ├─ Quản lý dịch vụ
+   │     ├─ Quản lý bài viết / tin tức
+   │     ├─ Quản lý job / tuyển dụng
+   │     ├─ Quản lý form liên hệ / lead
+   │     └─ Quản lý media (ảnh, video, PDF)
+   │
+   └── CRM tích hợp
+         ├─ Nhận lead từ form
+         ├─ Gửi email / SMS trả lời tự động
+         └─ Theo dõi pipeline khách hàng
+
+Nhóm Public (khách truy cập)
+
+Trang chủ (Home)
+
+Giới thiệu (About)
+
+Sản phẩm / Giống (Catalog)
+
+Danh mục sản phẩm
+
+Trang chi tiết sản phẩm
+
+Bộ lọc / So sánh
+
+Quy trình & Kiểm dịch
+
+Dịch vụ
+
+Tin tức / Blog / Case study
+
+Tuyển dụng
+
+Danh sách job
+
+Trang chi tiết job + form ứng tuyển
+
+Liên hệ
+
+Form liên hệ
+
+Đặt lịch tham quan (calendar form)
+
+Chính sách & Pháp lý
+
+Điều khoản sử dụng
+
+Chính sách bảo mật
+
+Cookie
+
+Nhóm Quản trị (Admin / Staff)
+
+Dashboard tổng quan
+
+Quản lý sản phẩm
+
+Quản lý dịch vụ
+
+Quản lý tin tức / blog
+
+Quản lý tuyển dụng
+
+Quản lý liên hệ / lead
+
+Quản lý media (ảnh/video/file)
+
+Quản lý tài khoản & phân quyền
+
+Tích hợp CRM / Export lead
