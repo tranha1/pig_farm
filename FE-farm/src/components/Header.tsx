@@ -10,7 +10,6 @@ const Header = () => {
 
   const navigation = [
     { name: "Trang chủ", href: "/" },
-    { name: "Giới thiệu", href: "/about" },
     { name: "Sản phẩm", href: "/products" },
     { name: "Quy trình", href: "/process" },
     { name: "Dịch vụ", href: "/services" },
