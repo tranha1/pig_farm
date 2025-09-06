@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import heroImage from "@/assets/hero-farm.jpg";
 
 const Hero = () => {
+  const { t } = useTranslation();
+  
   const features = [
-    "Giống GGP, GP, PS chất lượng cao",
+    t("products.ggp") + ", " + t("products.gp") + ", " + t("products.ps"),
     "Quy trình kiểm dịch nghiêm ngặt",
-    "Tư vấn kỹ thuật chuyên nghiệp",
+    t("services.consulting"),
     "Hỗ trợ 24/7"
   ];
 
@@ -29,12 +32,11 @@ const Hero = () => {
                 #1 Nhà cung cấp giống chăn nuôi tại Việt Nam
               </span>
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                Giống Chăn Nuôi
+                {t("hero.title")}
                 <span className="text-accent block">Chất Lượng Cao</span>
               </h1>
               <p className="text-xl text-gray-200 leading-relaxed">
-                Chuyên cung cấp giống GGP, GP, PS với quy trình kiểm dịch quốc tế.
-                Đồng hành cùng nông dân Việt Nam phát triển chăn nuôi bền vững.
+                {t("hero.subtitle")}
               </p>
             </div>
 
@@ -55,7 +57,7 @@ const Hero = () => {
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="outline" size="lg" className="border-white text-gray-600  text-foreground">
-                Tìm hiểu thêm
+                {t("common.learn_more")}
               </Button>
             </div>
 

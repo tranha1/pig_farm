@@ -8,12 +8,15 @@ import {
   ArrowRight,
   Zap
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Products = () => {
+  const { t } = useTranslation();
+  
   const productCategories = [
     {
       id: "ggp",
-      title: "GGP - Great Grand Parent",
+      title: t("products.ggp"),
       description: "Dòng ông bà, chất lượng gen cao nhất, nhập khẩu trực tiếp",
       image: "🐓",
       features: ["Tỷ lệ sống cao 98%", "Khả năng sinh sản tối ưu", "Kháng bệnh tự nhiên"],
@@ -22,7 +25,7 @@ const Products = () => {
     },
     {
       id: "gp", 
-      title: "GP - Grand Parent",
+      title: t("products.gp"),
       description: "Dòng cha mẹ, chất lượng ổn định, phù hợp quy mô trung bình",
       image: "🐔",
       features: ["Tăng trọng nhanh", "Tiêu thụ thức ăn hiệu quả", "Dễ chăm sóc"],
@@ -31,7 +34,7 @@ const Products = () => {
     },
     {
       id: "ps",
-      title: "PS - Parent Stock", 
+      title: t("products.ps"),
       description: "Dòng thương phẩm, giá cả phù hợp, chất lượng đảm bảo",
       image: "🐣",
       features: ["Giá cả hợp lý", "Phù hợp trang trại nhỏ", "Hỗ trợ kỹ thuật"],
@@ -67,7 +70,7 @@ const Products = () => {
             Sản phẩm chính
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Danh mục giống chăn nuôi
+            {t("products.title")}
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
             Cung cấp đầy đủ các dòng giống từ GGP đến PS, đáp ứng mọi nhu cầu 

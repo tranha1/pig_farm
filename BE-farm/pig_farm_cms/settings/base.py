@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
+    "modeltranslation",
+    "corsheaders",
+    "rest_framework",
     "modelcluster",
     "taggit",
     "django_filters",
@@ -49,8 +52,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -115,13 +120,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+from django.utils.translation import gettext_lazy as _
 
-TIME_ZONE = "UTC"
+LANGUAGE_CODE = "vi"
+
+LANGUAGES = [
+    ('vi', _('Tiếng Việt')),
+    ('en', _('English')),
+]
+
+TIME_ZONE = "Asia/Ho_Chi_Minh"
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
+
+# Locale paths
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 
 
 # Static files (CSS, JavaScript, Images)
@@ -162,6 +179,11 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 
 WAGTAIL_SITE_NAME = "pig_farm_cms"
 
+# Translation settings
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'vi'
+MODELTRANSLATION_LANGUAGES = ('vi', 'en')
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('vi', 'en')
+
 # Search
 # https://docs.wagtail.org/en/stable/topics/search/backends.html
 WAGTAILSEARCH_BACKENDS = {
@@ -179,3 +201,37 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 # if untrusted users are allowed to upload files -
 # see https://docs.wagtail.org/en/stable/advanced_topics/deploying.html#user-uploaded-files
 WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
+
+# CORS settings for API access
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # Vite dev server
+    "http://127.0.0.1:8080",
+    "http://localhost:5173",  # Alternative Vite port
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",  # Alternative frontend port
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}

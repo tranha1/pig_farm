@@ -3,21 +3,24 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, Phone, Mail } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { t } = useTranslation();
 
   const navigation = [
-    { name: "Trang chủ", href: "/" },
-    { name: "Sản phẩm", href: "/products" },
+    { name: t("nav.home"), href: "/" },
+    { name: t("nav.products"), href: "/products" },
     { name: "Quy trình", href: "/process" },
-    { name: "Dịch vụ", href: "/services" },
-    { name: "Tin tức", href: "/news" },
-    { name: "Liên hệ", href: "/contact" },
+    { name: t("nav.services"), href: "/services" },
+    { name: t("nav.news"), href: "/news" },
+    { name: t("nav.contact"), href: "/contact" },
   ];
 
-  const isActiveRoute = (href) => {
+  const isActiveRoute = (href: string) => {
     return location.pathname === href;
   };
 
@@ -73,8 +76,9 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons and Language Switcher */}
           <div className="hidden md:flex items-center space-x-3">
+            <LanguageSwitcher />
             <Button variant="outline" size="sm">
               Đặt lịch tham quan
             </Button>
@@ -92,6 +96,9 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <div className="flex flex-col space-y-4 mt-8">
+                <div className="flex justify-end mb-4">
+                  <LanguageSwitcher />
+                </div>
                 {navigation.map((item) => (
                   <Link
                     key={item.name}

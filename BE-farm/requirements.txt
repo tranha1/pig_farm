@@ -1,2 +1,10 @@
 Django>=5.2,<5.3
 wagtail>=7.1,<7.2
+wagtail-modeltranslation>=0.10.2
+django-modeltranslation>=0.18
+django-extensions
+python-decouple
+django-cors-headers
+djangorestframework
+Pillow>=9.1.0
+psycopg2-binary
