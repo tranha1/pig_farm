@@ -5,7 +5,8 @@ import Products from "@/components/Products";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, TrendingUp, Users, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, TrendingUp, Users, MapPin, Calendar, ArrowRight, Newspaper } from "lucide-react";
 
 const Index = () => {
   const businessAreas = [
@@ -45,6 +46,45 @@ const Index = () => {
     "Trại hạt nhân Duroc Đài Loan",
     "Hệ thống trại GGP, GP, PS: Axiom, Cooperl, Danish Genetics",
     "Hệ thống trang trại hạt nhân vệ tinh"
+  ];
+
+  const newsArticles = [
+    {
+      id: 1,
+      title: "Metafarm ký kết hợp tác chiến lược với Danish Genetics",
+      summary: "Thỏa thuận hợp tác mới mở ra cơ hội nhập khẩu dòng giống chất lượng cao từ Đan Mạch, nâng cao chất lượng đàn heo giống tại Việt Nam.",
+      date: "2024-08-15",
+      category: "Hợp tác",
+      image: "/api/placeholder/400/250",
+      readTime: "3 phút đọc"
+    },
+    {
+      id: 2,
+      title: "Kỹ thuật chăn nuôi heo giống hiện đại - Xu hướng 2024",
+      summary: "Tổng quan về các kỹ thuật chăn nuôi tiên tiến giúp nâng cao năng suất và chất lượng đàn heo, giảm chi phí sản xuất cho người chăn nuôi.",
+      date: "2024-08-10",
+      category: "Kỹ thuật",
+      image: "/api/placeholder/400/250",
+      readTime: "5 phút đọc"
+    },
+    {
+      id: 3,
+      title: "Metafarm mở rộng hệ thống trang trại tại miền Bắc",
+      summary: "Dự án mở rộng trang trại hạt nhân mới tại Hà Nội với công nghệ tiên tiến, đáp ứng nhu cầu ngày càng tăng của thị trường phía Bắc.",
+      date: "2024-08-05",
+      category: "Mở rộng",
+      image: "/api/placeholder/400/250",
+      readTime: "4 phút đọc"
+    },
+    {
+      id: 4,
+      title: "Hội thảo 'Tương lai chăn nuôi bền vững' thành công tốt đẹp",
+      summary: "Sự kiện quy tụ hơn 300 chuyên gia và nông dân, chia sẻ kinh nghiệm và định hướng phát triển chăn nuôi xanh, bền vững.",
+      date: "2024-07-28",
+      category: "Sự kiện",
+      image: "/api/placeholder/400/250",
+      readTime: "6 phút đọc"
+    }
   ];
 
   return (
@@ -166,6 +206,64 @@ const Index = () => {
                     <span className="text-foreground">{facility}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* News Section */}
+            <div className="mb-16">
+              <div className="text-center mb-12">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <Newspaper className="h-8 w-8 text-primary" />
+                  <h3 className="text-2xl font-bold text-foreground">
+                    Tin tức mới nhất
+                  </h3>
+                </div>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Cập nhật những thông tin mới nhất về ngành chăn nuôi, công nghệ và hoạt động của Metafarm
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {newsArticles.map((article) => (
+                  <Card key={article.id} className="border border-border shadow-soft hover:shadow-strong transition-all duration-300 group">
+                    <div className="aspect-video bg-gradient-to-r from-primary/10 to-accent/10 rounded-t-lg flex items-center justify-center">
+                      <Newspaper className="h-12 w-12 text-primary/60" />
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="secondary" className="text-xs">
+                          {article.category}
+                        </Badge>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Calendar className="h-3 w-3" />
+                          <span>{new Date(article.date).toLocaleDateString('vi-VN')}</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">•</span>
+                        <span className="text-xs text-muted-foreground">{article.readTime}</span>
+                      </div>
+                      
+                      <h4 className="text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
+                        {article.title}
+                      </h4>
+                      
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3">
+                        {article.summary}
+                      </p>
+                      
+                      <Button variant="ghost" size="sm" className="p-0 h-auto group-hover:text-primary">
+                        Đọc thêm
+                        <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <Button variant="outline" size="lg" className="group">
+                  Xem tất cả tin tức
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
               </div>
             </div>
           </div>
