@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
@@ -123,112 +124,273 @@ const Products = () => {
                     </p>
                 </div>
 
-                {/* Lợn đực giống */}
-                <section className="mb-16">
-                    <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
-                        1. LỢN ĐỰC GIỐNG
-                    </h2>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {boarBreeds.map((breed, index) => (
-                            <Card key={index} className="h-full">
-                                <CardHeader>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <CardTitle className="text-xl">{breed.name}</CardTitle>
-                                        <Badge variant="secondary">{breed.badge}</Badge>
-                                    </div>
-                                    <CardDescription>{breed.description}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <ul className="space-y-2">
-                                        {breed.features.map((feature, idx) => (
-                                            <li key={idx} className="text-sm text-muted-foreground flex">
+                <Tabs defaultValue="breeding-pigs" className="w-full">
+                    <TabsList className="grid w-full grid-cols-3 mb-8">
+                        <TabsTrigger value="breeding-pigs">Lợn giống</TabsTrigger>
+                        <TabsTrigger value="breeding-sows">Nái hậu bị</TabsTrigger>
+                        <TabsTrigger value="medicine">Thuốc</TabsTrigger>
+                    </TabsList>
+
+                    {/* Lợn giống Tab */}
+                    <TabsContent value="breeding-pigs" className="space-y-16">
+                        {/* Lợn đực giống */}
+                        <section>
+                            <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
+                                LỢN ĐỰC GIỐNG
+                            </h2>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {boarBreeds.map((breed, index) => (
+                                    <Card key={index} className="h-full">
+                                        <CardHeader>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <CardTitle className="text-xl">{breed.name}</CardTitle>
+                                                <Badge variant="secondary">{breed.badge}</Badge>
+                                            </div>
+                                            <CardDescription>{breed.description}</CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <ul className="space-y-2">
+                                                {breed.features.map((feature, idx) => (
+                                                    <li key={idx} className="text-sm text-muted-foreground flex">
+                                                        <span className="mr-2">•</span>
+                                                        <span>{feature}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Heo PS */}
+                        <section>
+                            <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
+                                HEO PS (PARENT STOCK)
+                            </h2>
+                            <div className="grid lg:grid-cols-3 gap-6">
+                                {psPigs.map((pig, index) => (
+                                    <Card key={index}>
+                                        <CardHeader>
+                                            <CardTitle className="text-xl">{pig.name}</CardTitle>
+                                            <Badge variant="outline" className="w-fit">
+                                                {pig.health}
+                                            </Badge>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">DI TRUYỀN</h4>
+                                                <p className="text-sm text-muted-foreground">{pig.genetics}</p>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">ĐặC ĐIỂM</h4>
+                                                <ul className="space-y-1">
+                                                    {pig.features.map((feature, idx) => (
+                                                        <li key={idx} className="text-sm text-muted-foreground flex">
+                                                            <span className="mr-2">•</span>
+                                                            <span>{feature}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            <div className="bg-muted p-3 rounded-lg">
+                                                <p className="text-sm text-muted-foreground italic">{pig.note}</p>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </section>
+                    </TabsContent>
+
+                    {/* Nái hậu bị Tab */}
+                    <TabsContent value="breeding-sows">
+                        <section>
+                            <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
+                                NÁI HẬU BỊ
+                            </h2>
+                            <div className="grid md:grid-cols-2 gap-8">
+                                {breedingSows.map((sow, index) => (
+                                    <Card key={index}>
+                                        <CardHeader>
+                                            <CardTitle className="text-xl">{sow.name}</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">NGUỒN GỐC</h4>
+                                                <p className="text-sm text-muted-foreground">{sow.origin}</p>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">NGOẠI HÌNH</h4>
+                                                <p className="text-sm text-muted-foreground">{sow.appearance}</p>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">SỐ CHU KỲ ĐẺ</h4>
+                                                <p className="text-sm text-muted-foreground">{sow.cycles}</p>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">NĂNG SUẤT SINH SẢN</h4>
+                                                <p className="text-sm text-muted-foreground">{sow.performance}</p>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-semibold text-foreground mb-1">ƯU ĐIỂM</h4>
+                                                <p className="text-sm text-muted-foreground">{sow.advantages}</p>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </section>
+                    </TabsContent>
+
+                    {/* Thuốc Tab */}
+                    <TabsContent value="medicine">
+                        <section>
+                            <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
+                                THUỐC VÀ VẮC XIN
+                            </h2>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">Vắc xin dịch tả heo</CardTitle>
+                                        <Badge variant="outline">Phòng bệnh</Badge>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2">
+                                            <li className="text-sm text-muted-foreground flex">
                                                 <span className="mr-2">•</span>
-                                                <span>{feature}</span>
+                                                <span>Phòng bệnh dịch tả heo cổ điển</span>
                                             </li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Nái hậu bị */}
-                <section className="mb-16">
-                    <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
-                        2. NÁI HẬU BỊ
-                    </h2>
-                    <div className="grid md:grid-cols-2 gap-8">
-                        {breedingSows.map((sow, index) => (
-                            <Card key={index}>
-                                <CardHeader>
-                                    <CardTitle className="text-xl">{sow.name}</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">NGUỒN GỐC</h4>
-                                        <p className="text-sm text-muted-foreground">{sow.origin}</p>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">NGOẠI HÌNH</h4>
-                                        <p className="text-sm text-muted-foreground">{sow.appearance}</p>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">SỐ CHU KỲ ĐẺ</h4>
-                                        <p className="text-sm text-muted-foreground">{sow.cycles}</p>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">NĂNG SUẤT SINH SẢN</h4>
-                                        <p className="text-sm text-muted-foreground">{sow.performance}</p>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">ƯU ĐIỂM</h4>
-                                        <p className="text-sm text-muted-foreground">{sow.advantages}</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Heo PS */}
-                <section className="mb-16">
-                    <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
-                        3. HEO PS (PARENT STOCK)
-                    </h2>
-                    <div className="grid lg:grid-cols-3 gap-6">
-                        {psPigs.map((pig, index) => (
-                            <Card key={index}>
-                                <CardHeader>
-                                    <CardTitle className="text-xl">{pig.name}</CardTitle>
-                                    <Badge variant="outline" className="w-fit">
-                                        {pig.health}
-                                    </Badge>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">DI TRUYỀN</h4>
-                                        <p className="text-sm text-muted-foreground">{pig.genetics}</p>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-foreground mb-1">ĐặC ĐIỂM</h4>
-                                        <ul className="space-y-1">
-                                            {pig.features.map((feature, idx) => (
-                                                <li key={idx} className="text-sm text-muted-foreground flex">
-                                                    <span className="mr-2">•</span>
-                                                    <span>{feature}</span>
-                                                </li>
-                                            ))}
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Hiệu quả bảo vệ cao</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>An toàn cho heo mang thai</span>
+                                            </li>
                                         </ul>
-                                    </div>
-                                    <div className="bg-muted p-3 rounded-lg">
-                                        <p className="text-sm text-muted-foreground italic">{pig.note}</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </section>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">Thuốc kháng sinh</CardTitle>
+                                        <Badge variant="outline">Điều trị</Badge>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2">
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Điều trị nhiễm khuẩn đường hô hấp</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Điều trị tiêu chảy</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Thời gian ngưng thuốc rõ ràng</span>
+                                            </li>
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">Vitamin và khoáng chất</CardTitle>
+                                        <Badge variant="outline">Bổ sung</Badge>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2">
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Tăng cường sức đề kháng</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Hỗ trợ sinh trưởng phát triển</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Cải thiện chất lượng thịt</span>
+                                            </li>
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">Thuốc tẩy giun</CardTitle>
+                                        <Badge variant="outline">Phòng trị</Badge>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2">
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Tẩy giun đường ruột</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Phòng trị ký sinh trùng</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Liều dùng dễ dàng</span>
+                                            </li>
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">Thuốc khử trùng</CardTitle>
+                                        <Badge variant="outline">Vệ sinh</Badge>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2">
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Khử trùng chuồng trại</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Diệt vi khuẩn, virus</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>An toàn cho người và vật nuôi</span>
+                                            </li>
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-xl">Sản phẩm hỗ trợ tiêu hóa</CardTitle>
+                                        <Badge variant="outline">Bổ sung</Badge>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-2">
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Men vi sinh có lợi</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Cải thiện hệ tiêu hóa</span>
+                                            </li>
+                                            <li className="text-sm text-muted-foreground flex">
+                                                <span className="mr-2">•</span>
+                                                <span>Tăng tỷ lệ hấp thu thức ăn</span>
+                                            </li>
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </section>
+                    </TabsContent>
+                </Tabs>
             </div>
             <Footer />
         </div>
