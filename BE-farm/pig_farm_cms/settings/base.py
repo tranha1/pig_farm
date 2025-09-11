@@ -92,8 +92,12 @@ WSGI_APPLICATION = "pig_farm_cms.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "pig_farm_cms",
+        "USER": "pig_farm_user", 
+        "PASSWORD": "pig_farm_pass",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 
