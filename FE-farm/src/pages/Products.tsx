@@ -1,10 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { useMedicines, usePigs } from "@/hooks/useApi";
+import { formatCurrency } from "@/lib/utils";
 
 const Products = () => {
+    // Fetch data from API
+    const { data: medicinesData, isLoading: medicinesLoading, error: medicinesError } = useMedicines({ published: true });
+    const { data: pigsData, isLoading: pigsLoading, error: pigsError } = usePigs({ published: true });
+
     const boarBreeds = [
         {
             name: "DUROC",
@@ -113,6 +121,151 @@ const Products = () => {
         }
     ];
 
+    const renderMedicines = () => {
+        if (medicinesLoading) {
+            return (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[...Array(6)].map((_, index) => (
+                        <Card key={index}>
+                            <CardHeader>
+                                <Skeleton className="h-6 w-3/4" />
+                                <Skeleton className="h-4 w-1/2" />
+                            </CardHeader>
+                            <CardContent>
+                                <Skeleton className="h-20 w-full" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            );
+        }
+
+        if (medicinesError) {
+            return (
+                <Alert>
+                    <AlertDescription>
+                        Không thể tải dữ liệu thuốc. Vui lòng thử lại sau.
+                    </AlertDescription>
+                </Alert>
+            );
+        }
+
+        if (!medicinesData?.data || medicinesData.data.length === 0) {
+            return (
+                <Alert>
+                    <AlertDescription>
+                        Hiện tại chưa có sản phẩm thuốc nào được công bố.
+                    </AlertDescription>
+                </Alert>
+            );
+        }
+
+        return (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {medicinesData.data.map((medicine) => (
+                    <Card key={medicine.id}>
+                        <CardHeader>
+                            <CardTitle className="text-xl">{medicine.name}</CardTitle>
+                            <Badge variant="outline">
+                                {medicine.is_published ? 'Có sẵn' : 'Hết hàng'}
+                            </Badge>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {medicine.packaging && (
+                                <div>
+                                    <h4 className="font-semibold text-foreground mb-1">ĐÓNG GÓI</h4>
+                                    <p className="text-sm text-muted-foreground">{medicine.packaging}</p>
+                                </div>
+                            )}
+                            
+                            <div className="space-y-2">
+                                {medicine.price_unit && (
+                                    <div className="flex justify-between">
+                                        <span className="text-sm text-muted-foreground">Giá đơn vị:</span>
+                                        <span className="font-semibold">{formatCurrency(medicine.price_unit)}</span>
+                                    </div>
+                                )}
+                                {medicine.price_total && (
+                                    <div className="flex justify-between">
+                                        <span className="text-sm text-muted-foreground">Giá tổng:</span>
+                                        <span className="font-semibold">{formatCurrency(medicine.price_total)}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {medicine.updated_at && (
+                                <div className="pt-2 border-t">
+                                    <p className="text-xs text-muted-foreground">
+                                        Cập nhật: {new Date(medicine.updated_at).toLocaleDateString('vi-VN')}
+                                    </p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        );
+    };
+
+    const renderDynamicPigs = () => {
+        if (pigsLoading) {
+            return (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                    {[...Array(3)].map((_, index) => (
+                        <Card key={index}>
+                            <CardHeader>
+                                <Skeleton className="h-6 w-3/4" />
+                            </CardHeader>
+                            <CardContent>
+                                <Skeleton className="h-16 w-full" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            );
+        }
+
+        if (pigsError || !pigsData?.data || pigsData.data.length === 0) {
+            return null; // Don't show error for pigs, just hide the section
+        }
+
+        return (
+            <section className="mt-16">
+                <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
+                    SẢN PHẨM LỢN HIỆN CÓ
+                </h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {pigsData.data.map((pig) => (
+                        <Card key={pig.id}>
+                            <CardHeader>
+                                <CardTitle className="text-xl">{pig.name}</CardTitle>
+                                <Badge variant={pig.is_published ? "default" : "secondary"}>
+                                    {pig.is_published ? 'Có sẵn' : 'Hết hàng'}
+                                </Badge>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {pig.price && (
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-muted-foreground">Giá:</span>
+                                        <span className="font-semibold text-lg">{formatCurrency(pig.price)}</span>
+                                    </div>
+                                )}
+                                
+                                {pig.updated_at && (
+                                    <div className="pt-2 border-t">
+                                        <p className="text-xs text-muted-foreground">
+                                            Cập nhật: {new Date(pig.updated_at).toLocaleDateString('vi-VN')}
+                                        </p>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </section>
+        );
+    };
+
     return (
         <div className="min-h-screen bg-background">
             <Header />
@@ -201,6 +354,9 @@ const Products = () => {
                                 ))}
                             </div>
                         </section>
+
+                        {/* Dynamic pigs from API */}
+                        {renderDynamicPigs()}
                     </TabsContent>
 
                     {/* Nái hậu bị Tab */}
@@ -244,150 +400,13 @@ const Products = () => {
                     </TabsContent>
 
                     {/* Thuốc Tab */}
+                    {/* Medicine Tab - now using API data */}
                     <TabsContent value="medicine">
                         <section>
                             <h2 className="text-3xl font-semibold text-foreground mb-8 text-center">
                                 THUỐC VÀ VẮC XIN
                             </h2>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-xl">Vắc xin dịch tả heo</CardTitle>
-                                        <Badge variant="outline">Phòng bệnh</Badge>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Phòng bệnh dịch tả heo cổ điển</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Hiệu quả bảo vệ cao</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>An toàn cho heo mang thai</span>
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-xl">Thuốc kháng sinh</CardTitle>
-                                        <Badge variant="outline">Điều trị</Badge>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Điều trị nhiễm khuẩn đường hô hấp</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Điều trị tiêu chảy</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Thời gian ngưng thuốc rõ ràng</span>
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-xl">Vitamin và khoáng chất</CardTitle>
-                                        <Badge variant="outline">Bổ sung</Badge>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Tăng cường sức đề kháng</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Hỗ trợ sinh trưởng phát triển</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Cải thiện chất lượng thịt</span>
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-xl">Thuốc tẩy giun</CardTitle>
-                                        <Badge variant="outline">Phòng trị</Badge>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Tẩy giun đường ruột</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Phòng trị ký sinh trùng</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Liều dùng dễ dàng</span>
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-xl">Thuốc khử trùng</CardTitle>
-                                        <Badge variant="outline">Vệ sinh</Badge>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Khử trùng chuồng trại</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Diệt vi khuẩn, virus</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>An toàn cho người và vật nuôi</span>
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-xl">Sản phẩm hỗ trợ tiêu hóa</CardTitle>
-                                        <Badge variant="outline">Bổ sung</Badge>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-2">
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Men vi sinh có lợi</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Cải thiện hệ tiêu hóa</span>
-                                            </li>
-                                            <li className="text-sm text-muted-foreground flex">
-                                                <span className="mr-2">•</span>
-                                                <span>Tăng tỷ lệ hấp thu thức ăn</span>
-                                            </li>
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                            {renderMedicines()}
                         </section>
                     </TabsContent>
                 </Tabs>
