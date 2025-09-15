@@ -16,6 +16,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <FloatingContact />
       <Suspense fallback={<div>Loading translations...</div>}>
         <BrowserRouter>
           <Routes>

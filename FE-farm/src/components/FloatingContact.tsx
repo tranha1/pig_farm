@@ -1,4 +1,5 @@
 import { Phone, Facebook } from "lucide-react";
+import zaloIcon from "../assets/zalo-icon.png";
 
 const FloatingContact = () => {
     return (
@@ -21,6 +22,17 @@ const FloatingContact = () => {
                 title="Facebook"
             >
                 <Facebook className="w-6 h-6" />
+            </a>
+
+            {/* Zalo Button */}
+            <a
+                href="https://zalo.me/0123456789"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-500 text-white p-3 rounded-r-lg shadow-lg hover:bg-blue-600 transition-colors duration-300 group"
+                title="Chat Zalo"
+            >
+                <img src={zaloIcon} alt="Zalo" className="w-6 h-6" />
             </a>
         </div>
     );
