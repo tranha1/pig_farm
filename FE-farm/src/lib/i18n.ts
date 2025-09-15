@@ -1,12 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import HttpApi from 'i18next-http-backend';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 i18n
-  .use(HttpApi)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -16,14 +12,6 @@ i18n
     
     interpolation: {
       escapeValue: false,
-    },
-
-    backend: {
-      loadPath: `${API_BASE_URL}/api/v1/translations/`,
-      parse: (data: string) => {
-        const parsed = JSON.parse(data);
-        return parsed.translations;
-      },
     },
 
     detection: {

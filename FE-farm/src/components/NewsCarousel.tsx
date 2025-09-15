@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
+import type { NewsArticle } from "@/services/api";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -11,21 +12,22 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import './NewsCarousel.css';
 
-interface NewsArticle {
-  id: number;
-  title: string;
-  summary: string;
-  date: string;
-  category: string;
-  image?: string;
-  readTime: string;
-}
-
 interface NewsCarouselProps {
   articles: NewsArticle[];
+  categories?: { [key: number]: string };
 }
 
-const NewsCarousel = ({ articles }: NewsCarouselProps) => {
+const NewsCarousel = ({ articles, categories = {} }: NewsCarouselProps) => {
+  const getCategoryName = (categoryId?: number) => {
+    if (!categoryId) return 'Tin tức';
+    return categories[categoryId] || 'Tin tức';
+  };
+
+  const getReadTimeDisplay = (readTime?: number) => {
+    if (!readTime) return 'N/A';
+    return `${readTime} phút đọc`;
+  };
+
   return (
     <div className="relative">
       <Swiper
@@ -71,14 +73,14 @@ const NewsCarousel = ({ articles }: NewsCarouselProps) => {
               <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-3">
                   <Badge variant="secondary" className="text-xs">
-                    {article.category}
+                    {getCategoryName(article.category_id)}
                   </Badge>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Calendar className="h-3 w-3" />
-                    <span>{new Date(article.date).toLocaleDateString('vi-VN')}</span>
+                    <span>{new Date(article.published_at || article.created_at || '').toLocaleDateString('vi-VN')}</span>
                   </div>
                   <span className="text-xs text-muted-foreground">•</span>
-                  <span className="text-xs text-muted-foreground">{article.readTime}</span>
+                  <span className="text-xs text-muted-foreground">{getReadTimeDisplay(article.read_time)}</span>
                 </div>
                 
                 <h4 className="text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2 flex-grow">

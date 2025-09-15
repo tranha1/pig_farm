@@ -4,12 +4,15 @@ import Services from "@/components/Services";
 import Products from "@/components/Products";
 import Footer from "@/components/Footer";
 import NewsCarousel from "@/components/NewsCarousel";
+import { useNews } from "@/hooks/useNews";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, TrendingUp, Users, MapPin, Calendar, ArrowRight, Newspaper } from "lucide-react";
 
 const Index = () => {
+  const { articles, categories, loading, error } = useNews();
+  
   const businessAreas = [
     {
       title: "Chăn nuôi & nhập khẩu heo giống",
@@ -47,81 +50,6 @@ const Index = () => {
     "Trại hạt nhân Duroc Đài Loan",
     "Hệ thống trại GGP, GP, PS: Axiom, Cooperl, Danish Genetics",
     "Hệ thống trang trại hạt nhân vệ tinh"
-  ];
-
-  const newsArticles = [
-    {
-      id: 1,
-      title: "Metafarm ký kết hợp tác chiến lược với Danish Genetics",
-      summary: "Thỏa thuận hợp tác mới mở ra cơ hội nhập khẩu dòng giống chất lượng cao từ Đan Mạch, nâng cao chất lượng đàn heo giống tại Việt Nam. Dự kiến sẽ mang về 500 con heo giống chất lượng cao trong quý IV/2024.",
-      date: "2024-08-15",
-      category: "Hợp tác",
-      image: "/api/placeholder/400/250",
-      readTime: "3 phút đọc"
-    },
-    {
-      id: 2,
-      title: "Kỹ thuật chăn nuôi heo giống hiện đại - Xu hướng 2024",
-      summary: "Tổng quan về các kỹ thuật chăn nuôi tiên tiến giúp nâng cao năng suất và chất lượng đàn heo, giảm chi phí sản xuất cho người chăn nuôi. Ứng dụng công nghệ IoT và AI trong quản lý trang trại.",
-      date: "2024-08-10",
-      category: "Kỹ thuật",
-      image: "/api/placeholder/400/250",
-      readTime: "5 phút đọc"
-    },
-    {
-      id: 3,
-      title: "Metafarm mở rộng hệ thống trang trại tại miền Bắc",
-      summary: "Dự án mở rộng trang trại hạt nhân mới tại Hà Nội với công nghệ tiên tiến, đáp ứng nhu cầu ngày càng tăng của thị trường phía Bắc. Tổng vốn đầu tư 50 tỷ đồng, quy mô 1000 con heo nái.",
-      date: "2024-08-05",
-      category: "Mở rộng",
-      image: "/api/placeholder/400/250",
-      readTime: "4 phút đọc"
-    },
-    {
-      id: 4,
-      title: "Hội thảo 'Tương lai chăn nuôi bền vững' thành công tốt đẹp",
-      summary: "Sự kiện quy tụ hơn 300 chuyên gia và nông dân, chia sẻ kinh nghiệm và định hướng phát triển chăn nuôi xanh, bền vững. Giới thiệu các giải pháp giảm khí thải và tối ưu hóa chi phí.",
-      date: "2024-07-28",
-      category: "Sự kiện",
-      image: "/api/placeholder/400/250",
-      readTime: "6 phút đọc"
-    },
-    {
-      id: 5,
-      title: "Metafarm đạt chứng nhận ISO 9001:2015 về quản lý chất lượng",
-      summary: "Công ty chính thức nhận chứng nhận ISO 9001:2015, khẳng định cam kết về chất lượng sản phẩm và dịch vụ. Đây là bước tiến quan trọng trong việc nâng cao uy tín và thương hiệu của Metafarm.",
-      date: "2024-07-20",
-      category: "Chứng nhận",
-      image: "/api/placeholder/400/250",
-      readTime: "3 phút đọc"
-    },
-    {
-      id: 6,
-      title: "Dự án trang trại thông minh với công nghệ AI và IoT",
-      summary: "Triển khai hệ thống giám sát tự động 24/7 với cảm biến nhiệt độ, độ ẩm và chất lượng không khí. Ứng dụng AI để dự đoán và cảnh báo sớm các bệnh tật, tối ưu hóa hiệu quả chăn nuôi.",
-      date: "2024-07-15",
-      category: "Công nghệ",
-      image: "/api/placeholder/400/250",
-      readTime: "7 phút đọc"
-    },
-    {
-      id: 7,
-      title: "Thành công trong việc nhập khẩu 200 con heo Duroc từ Đài Loan",
-      summary: "Lô heo giống Duroc chất lượng cao đã về đến trang trại của Metafarm, đáp ứng tiêu chuẩn khắt khe về sức khỏe và di truyền. Đây là bước quan trọng trong chiến lược đa dạng hóa nguồn gen.",
-      date: "2024-07-10",
-      category: "Nhập khẩu",
-      image: "/api/placeholder/400/250",
-      readTime: "4 phút đọc"
-    },
-    {
-      id: 8,
-      title: "Khóa đào tạo 'Kỹ thuật chăn nuôi hiện đại' cho nông dân",
-      summary: "Chương trình đào tạo miễn phí dành cho 100 nông dân trong khu vực, chia sẻ kiến thức về dinh dưỡng, phòng bệnh và quản lý trang trại hiệu quả. Góp phần nâng cao trình độ chăn nuôi của người dân.",
-      date: "2024-07-05",
-      category: "Đào tạo",
-      image: "/api/placeholder/400/250",
-      readTime: "5 phút đọc"
-    }
   ];
 
   return (
@@ -260,14 +188,37 @@ const Index = () => {
                 </p>
               </div>
 
-              <NewsCarousel articles={newsArticles} />
-
-              <div className="text-center mt-8">
-                <Button variant="outline" size="lg" className="group">
-                  Xem tất cả tin tức
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </div>
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <p className="text-muted-foreground mt-4">Đang tải tin tức...</p>
+                </div>
+              ) : error ? (
+                <div className="text-center py-12">
+                  <p className="text-red-500 mb-4">Không thể tải tin tức: {error}</p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => window.location.reload()}
+                  >
+                    Thử lại
+                  </Button>
+                </div>
+              ) : articles.length > 0 ? (
+                <>
+                  <NewsCarousel articles={articles} categories={categories} />
+                  <div className="text-center mt-8">
+                    <Button variant="outline" size="lg" className="group">
+                      Xem tất cả tin tức
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <Newspaper className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">Chưa có tin tức nào được đăng</p>
+                </div>
+              )}
             </div>
           </div>
         </section>

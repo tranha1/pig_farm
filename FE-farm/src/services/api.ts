@@ -20,6 +20,42 @@ export interface Pig {
   updated_at?: string;
 }
 
+export interface NewsCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  color?: string;
+  icon?: string;
+  parent_id?: number;
+  sort_order: number;
+  is_published: boolean;
+  published_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface NewsArticle {
+  id: number;
+  title: string;
+  slug: string;
+  summary?: string;
+  content?: string;
+  featured_image?: string;
+  category_id?: number;  // Note: Not implemented in cms_content_entry yet
+  author?: string;
+  read_time?: number;
+  view_count: number;  // Note: Always 0 for now, not tracked in cms_content_entry
+  tags: string[];
+  meta_title?: string;
+  meta_description?: string;
+  is_featured: boolean;  // Note: Always false for now, not implemented in cms_content_entry
+  is_published: boolean;
+  published_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface ApiResponse<T> {
   status: 'success' | 'error';
   data: T[];
@@ -39,6 +75,11 @@ export interface ApiParams {
   page_size?: number;
   search?: string;
   published?: boolean;
+}
+
+export interface NewsApiParams extends ApiParams {
+  category?: string;
+  featured?: boolean;
 }
 
 class ApiService {
@@ -73,6 +114,26 @@ class ApiService {
 
   async getPigs(params?: ApiParams): Promise<ApiResponse<Pig>> {
     return this.request<Pig>('/pigs/', params);
+  }
+
+  async getNewsArticles(params?: NewsApiParams): Promise<ApiResponse<NewsArticle>> {
+    return this.request<NewsArticle>('/news/', params);
+  }
+
+  async getNewsArticle(articleId: number): Promise<{ status: string; data: NewsArticle; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/news/${articleId}/`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async getNewsCategories(): Promise<{ status: string; data: NewsCategory[]; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/news/categories/`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
   }
 
   async healthCheck(): Promise<{ status: string; service: string; version: string }> {
