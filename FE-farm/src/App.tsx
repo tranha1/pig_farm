@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound";
 import Products from "./pages/Products.tsx";
+import FloatingContact from "./components/FloatingContact.tsx";
 
 const queryClient = new QueryClient();
 
