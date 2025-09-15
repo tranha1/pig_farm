@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -113,79 +114,85 @@ const News = () => {
 
   const NewsCard = ({ article }: { article: NewsArticle }) => (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-      {article.featured_image && (
-        <div className="relative overflow-hidden">
-          <img
-            src={article.featured_image}
-            alt={article.title}
-            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          {article.is_featured && (
-            <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
-              Nổi bật
-            </Badge>
-          )}
-        </div>
-      )}
-      
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          {article.category_id && (
-            <Badge variant="secondary" className="text-xs">
-              {getCategoryName(article.category_id)}
-            </Badge>
-          )}
-          <span className="flex items-center gap-1">
-            <Calendar className="h-3 w-3" />
-            {formatDate(article.published_at)}
-          </span>
-        </div>
-        
-        <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
-          {article.title}
-        </CardTitle>
-        
-        {article.summary && (
-          <CardDescription className="line-clamp-3 mt-2">
-            {article.summary}
-          </CardDescription>
-        )}
-      </CardHeader>
-      
-      <CardContent className="pt-0">
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-          <div className="flex items-center gap-4">
-            {article.author && (
-              <span className="flex items-center gap-1">
-                <User className="h-3 w-3" />
-                {article.author}
-              </span>
+      <Link to={`/news/${article.slug}`} className="block">
+        {article.featured_image && (
+          <div className="relative overflow-hidden">
+            <img
+              src={article.featured_image}
+              alt={article.title}
+              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            {article.is_featured && (
+              <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
+                Nổi bật
+              </Badge>
             )}
-            {article.read_time && (
-              <span className="flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                {article.read_time} phút đọc
-              </span>
+          </div>
+        )}
+        
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            {article.category_id && (
+              <Badge variant="secondary" className="text-xs">
+                {getCategoryName(article.category_id)}
+              </Badge>
             )}
             <span className="flex items-center gap-1">
-              <Eye className="h-3 w-3" />
-              {article.view_count}
+              <Calendar className="h-3 w-3" />
+              {formatDate(article.published_at)}
             </span>
           </div>
-        </div>
+          
+          <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+            {article.title}
+          </CardTitle>
+          
+          {article.summary && (
+            <CardDescription className="line-clamp-3 mt-2">
+              {article.summary}
+            </CardDescription>
+          )}
+        </CardHeader>
         
-        {article.tags && article.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {article.tags.slice(0, 3).map((tag, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+            <div className="flex items-center gap-4">
+              {article.author && (
+                <span className="flex items-center gap-1">
+                  <User className="h-3 w-3" />
+                  {article.author}
+                </span>
+              )}
+              {article.read_time && (
+                <span className="flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {article.read_time} phút đọc
+                </span>
+              )}
+              <span className="flex items-center gap-1">
+                <Eye className="h-3 w-3" />
+                {article.view_count}
+              </span>
+            </div>
           </div>
-        )}
-        
-        <Button className="w-full" variant="outline">
-          Đọc thêm
+          
+          {article.tags && article.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {article.tags.slice(0, 3).map((tag, index) => (
+                <Badge key={index} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Link>
+      
+      <CardContent className="pt-0">
+        <Button className="w-full" variant="outline" asChild>
+          <Link to={`/news/${article.slug}`}>
+            Đọc thêm
+          </Link>
         </Button>
       </CardContent>
     </Card>
