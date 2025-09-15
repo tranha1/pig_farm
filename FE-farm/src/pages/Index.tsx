@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Products from "@/components/Products";
 import Footer from "@/components/Footer";
+import NewsCarousel from "@/components/NewsCarousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ const Index = () => {
     {
       id: 1,
       title: "Metafarm ký kết hợp tác chiến lược với Danish Genetics",
-      summary: "Thỏa thuận hợp tác mới mở ra cơ hội nhập khẩu dòng giống chất lượng cao từ Đan Mạch, nâng cao chất lượng đàn heo giống tại Việt Nam.",
+      summary: "Thỏa thuận hợp tác mới mở ra cơ hội nhập khẩu dòng giống chất lượng cao từ Đan Mạch, nâng cao chất lượng đàn heo giống tại Việt Nam. Dự kiến sẽ mang về 500 con heo giống chất lượng cao trong quý IV/2024.",
       date: "2024-08-15",
       category: "Hợp tác",
       image: "/api/placeholder/400/250",
@@ -61,7 +62,7 @@ const Index = () => {
     {
       id: 2,
       title: "Kỹ thuật chăn nuôi heo giống hiện đại - Xu hướng 2024",
-      summary: "Tổng quan về các kỹ thuật chăn nuôi tiên tiến giúp nâng cao năng suất và chất lượng đàn heo, giảm chi phí sản xuất cho người chăn nuôi.",
+      summary: "Tổng quan về các kỹ thuật chăn nuôi tiên tiến giúp nâng cao năng suất và chất lượng đàn heo, giảm chi phí sản xuất cho người chăn nuôi. Ứng dụng công nghệ IoT và AI trong quản lý trang trại.",
       date: "2024-08-10",
       category: "Kỹ thuật",
       image: "/api/placeholder/400/250",
@@ -70,7 +71,7 @@ const Index = () => {
     {
       id: 3,
       title: "Metafarm mở rộng hệ thống trang trại tại miền Bắc",
-      summary: "Dự án mở rộng trang trại hạt nhân mới tại Hà Nội với công nghệ tiên tiến, đáp ứng nhu cầu ngày càng tăng của thị trường phía Bắc.",
+      summary: "Dự án mở rộng trang trại hạt nhân mới tại Hà Nội với công nghệ tiên tiến, đáp ứng nhu cầu ngày càng tăng của thị trường phía Bắc. Tổng vốn đầu tư 50 tỷ đồng, quy mô 1000 con heo nái.",
       date: "2024-08-05",
       category: "Mở rộng",
       image: "/api/placeholder/400/250",
@@ -79,11 +80,47 @@ const Index = () => {
     {
       id: 4,
       title: "Hội thảo 'Tương lai chăn nuôi bền vững' thành công tốt đẹp",
-      summary: "Sự kiện quy tụ hơn 300 chuyên gia và nông dân, chia sẻ kinh nghiệm và định hướng phát triển chăn nuôi xanh, bền vững.",
+      summary: "Sự kiện quy tụ hơn 300 chuyên gia và nông dân, chia sẻ kinh nghiệm và định hướng phát triển chăn nuôi xanh, bền vững. Giới thiệu các giải pháp giảm khí thải và tối ưu hóa chi phí.",
       date: "2024-07-28",
       category: "Sự kiện",
       image: "/api/placeholder/400/250",
       readTime: "6 phút đọc"
+    },
+    {
+      id: 5,
+      title: "Metafarm đạt chứng nhận ISO 9001:2015 về quản lý chất lượng",
+      summary: "Công ty chính thức nhận chứng nhận ISO 9001:2015, khẳng định cam kết về chất lượng sản phẩm và dịch vụ. Đây là bước tiến quan trọng trong việc nâng cao uy tín và thương hiệu của Metafarm.",
+      date: "2024-07-20",
+      category: "Chứng nhận",
+      image: "/api/placeholder/400/250",
+      readTime: "3 phút đọc"
+    },
+    {
+      id: 6,
+      title: "Dự án trang trại thông minh với công nghệ AI và IoT",
+      summary: "Triển khai hệ thống giám sát tự động 24/7 với cảm biến nhiệt độ, độ ẩm và chất lượng không khí. Ứng dụng AI để dự đoán và cảnh báo sớm các bệnh tật, tối ưu hóa hiệu quả chăn nuôi.",
+      date: "2024-07-15",
+      category: "Công nghệ",
+      image: "/api/placeholder/400/250",
+      readTime: "7 phút đọc"
+    },
+    {
+      id: 7,
+      title: "Thành công trong việc nhập khẩu 200 con heo Duroc từ Đài Loan",
+      summary: "Lô heo giống Duroc chất lượng cao đã về đến trang trại của Metafarm, đáp ứng tiêu chuẩn khắt khe về sức khỏe và di truyền. Đây là bước quan trọng trong chiến lược đa dạng hóa nguồn gen.",
+      date: "2024-07-10",
+      category: "Nhập khẩu",
+      image: "/api/placeholder/400/250",
+      readTime: "4 phút đọc"
+    },
+    {
+      id: 8,
+      title: "Khóa đào tạo 'Kỹ thuật chăn nuôi hiện đại' cho nông dân",
+      summary: "Chương trình đào tạo miễn phí dành cho 100 nông dân trong khu vực, chia sẻ kiến thức về dinh dưỡng, phòng bệnh và quản lý trang trại hiệu quả. Góp phần nâng cao trình độ chăn nuôi của người dân.",
+      date: "2024-07-05",
+      category: "Đào tạo",
+      image: "/api/placeholder/400/250",
+      readTime: "5 phút đọc"
     }
   ];
 
@@ -223,43 +260,9 @@ const Index = () => {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                {newsArticles.map((article) => (
-                  <Card key={article.id} className="border border-border shadow-soft hover:shadow-strong transition-all duration-300 group">
-                    <div className="aspect-video bg-gradient-to-r from-primary/10 to-accent/10 rounded-t-lg flex items-center justify-center">
-                      <Newspaper className="h-12 w-12 text-primary/60" />
-                    </div>
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="secondary" className="text-xs">
-                          {article.category}
-                        </Badge>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          <span>{new Date(article.date).toLocaleDateString('vi-VN')}</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground">•</span>
-                        <span className="text-xs text-muted-foreground">{article.readTime}</span>
-                      </div>
-                      
-                      <h4 className="text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                        {article.title}
-                      </h4>
-                      
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3">
-                        {article.summary}
-                      </p>
-                      
-                      <Button variant="ghost" size="sm" className="p-0 h-auto group-hover:text-primary">
-                        Đọc thêm
-                        <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <NewsCarousel articles={newsArticles} />
 
-              <div className="text-center">
+              <div className="text-center mt-8">
                 <Button variant="outline" size="lg" className="group">
                   Xem tất cả tin tức
                   <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
