@@ -161,19 +161,29 @@ const Products = () => {
     return (
         <div className="min-h-screen bg-background">
             <Header />
-            <div className="container mx-auto px-4 py-8">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-foreground mb-4">Sản phẩm META FARM</h1>
-                    <p className="text-lg text-muted-foreground">
-                        Cung cấp đầy đủ các dòng giống chất lượng cao từ các nước có nền chăn nuôi phát triển
-                    </p>
+            
+            {/* Hero Section */}
+            <section className="bg-gradient-to-r from-primary to-primary/80 text-white py-20">
+                <div className="container mx-auto px-4">
+                    <div className="text-center">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                            Sản phẩm Metafarm
+                        </h1>
+                        <p className="text-xl text-primary-foreground/90 max-w-3xl mx-auto">
+                            Cung cấp đầy đủ các dòng heo giống chất lượng cao từ các quốc gia có nền chăn nuôi phát triển 
+                            như Đan Mạch, Pháp, Đài Loan cùng với thuốc thú y và thiết bị chăn nuôi hiện đại.
+                        </p>
+                    </div>
                 </div>
+            </section>
 
-                <Tabs defaultValue="breeding-pigs" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-8">
-                        <TabsTrigger value="breeding-pigs">Lợn giống</TabsTrigger>
-                        <TabsTrigger value="medicine">Thuốc</TabsTrigger>
-                    </TabsList>
+            <main className="py-16">
+                <div className="container mx-auto px-4">
+                    <Tabs defaultValue="breeding-pigs" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2 mb-8">
+                            <TabsTrigger value="breeding-pigs">Heo giống</TabsTrigger>
+                            <TabsTrigger value="medicine">Thuốc thú y & Thiết bị</TabsTrigger>
+                        </TabsList>
 
                     {/* Lợn giống Tab */}
                     <TabsContent value="breeding-pigs" className="space-y-16">
@@ -256,7 +266,8 @@ const Products = () => {
                         </section>
                     </TabsContent>
                 </Tabs>
-            </div>
+                </div>
+            </main>
             <Footer />
         </div>
     );
