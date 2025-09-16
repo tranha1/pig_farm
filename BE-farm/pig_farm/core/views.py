@@ -298,3 +298,73 @@ def api_news_categories(request):
             'status': 'error',
             'message': str(e)
         }, status=500)
+
+
+@require_http_methods(["GET"])
+def api_pig_detail(request, pig_id):
+    """API endpoint for single pig detail"""
+    try:
+        pig = Pig.objects.get(
+            id=pig_id, 
+            is_published=True, 
+            is_deleted=False
+        )
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'id': pig.id,
+                'name': pig.name,
+                'price': float(pig.price) if pig.price else None,
+                'is_published': pig.is_published,
+                'published_at': pig.published_at.isoformat() if pig.published_at else None,
+                'updated_at': pig.updated_at.isoformat() if pig.updated_at else None,
+            }
+        })
+        
+    except Pig.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Pig not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+
+
+@require_http_methods(["GET"])
+def api_medicine_detail(request, medicine_id):
+    """API endpoint for single medicine detail"""
+    try:
+        medicine = Medicine.objects.get(
+            id=medicine_id, 
+            is_published=True, 
+            is_deleted=False
+        )
+        
+        return JsonResponse({
+            'status': 'success',
+            'data': {
+                'id': medicine.id,
+                'name': medicine.name,
+                'packaging': medicine.packaging,
+                'price_unit': float(medicine.price_unit) if medicine.price_unit else None,
+                'price_total': float(medicine.price_total) if medicine.price_total else None,
+                'is_published': medicine.is_published,
+                'published_at': medicine.published_at.isoformat() if medicine.published_at else None,
+                'updated_at': medicine.updated_at.isoformat() if medicine.updated_at else None,
+            }
+        })
+        
+    except Medicine.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Medicine not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
