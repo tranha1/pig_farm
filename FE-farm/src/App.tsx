@@ -11,6 +11,7 @@ import News from "./pages/News.tsx";
 import NewsDetail from "./pages/NewsDetail.tsx";
 import Contact from "./pages/Contact.tsx";
 import Process from "./pages/Process.tsx";
+import Services from "./pages/Services.tsx";
 import FloatingContact from "./components/FloatingContact.tsx";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/products" element={<Products />} />
             <Route path="/process" element={<Process />} />
+            <Route path="/services" element={<Services />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:slug" element={<NewsDetail />} />
             <Route path="/contact" element={<Contact />} />
