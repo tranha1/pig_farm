@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +12,6 @@ import Footer from "@/components/Footer";
 import { apiService, NewsArticle, NewsCategory, NewsApiParams } from "@/services/api";
 
 const News = () => {
-  const { t } = useTranslation();
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [categories, setCategories] = useState<NewsCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -225,29 +223,34 @@ const News = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            {t("nav.news", "Tin tức")}
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Cập nhật những thông tin mới nhất về ngành chăn nuôi, 
-            kỹ thuật nuôi dưỡng và các sản phẩm chất lượng
-          </p>
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Tìm kiếm bài viết..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-            />
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-primary to-primary/80 text-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Tin tức & Cập nhật
+            </h1>
+            <p className="text-xl text-primary-foreground/90 max-w-3xl mx-auto">
+              Cập nhật những thông tin mới nhất về ngành chăn nuôi, công nghệ tiên tiến 
+              và hoạt động của Metafarm. Chia sẻ kiến thức chuyên môn từ các chuyên gia hàng đầu.
+            </p>
           </div>
+        </div>
+      </section>
+
+      <main className="py-16">
+        <div className="container mx-auto px-4">
+          {/* Filters */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Tìm kiếm bài viết..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           
           <Select value={selectedCategory || "all"} onValueChange={(value) => setSelectedCategory(value === "all" ? "" : value)}>
             <SelectTrigger className="w-full md:w-48">
@@ -334,6 +337,7 @@ const News = () => {
             )}
           </>
         )}
+        </div>
       </main>
       
       <Footer />
