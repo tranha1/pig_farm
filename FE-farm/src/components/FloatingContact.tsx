@@ -6,7 +6,7 @@ const FloatingContact = () => {
         <div className="fixed left-0 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
             {/* Phone Button */}
             <a
-                href="tel:+84123456789"
+                href="tel:+84975885946"
                 className="bg-primary text-primary-foreground p-3 rounded-r-lg shadow-lg hover:bg-primary/90 transition-colors duration-300 group"
                 title="Gọi điện thoại"
             >
@@ -26,7 +26,7 @@ const FloatingContact = () => {
 
             {/* Zalo Button */}
             <a
-                href="https://zalo.me/0123456789"
+                href="https://zalo.me/0975885946"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-blue-500 text-white p-3 rounded-r-lg shadow-lg hover:bg-blue-600 transition-colors duration-300 group"
