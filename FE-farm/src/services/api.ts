@@ -116,6 +116,22 @@ class ApiService {
     return this.request<Pig>('/pigs/', params);
   }
 
+  async getPig(pigId: number): Promise<{ status: string; data: Pig; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/pigs/${pigId}/`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
+  async getMedicine(medicineId: number): Promise<{ status: string; data: Medicine; message?: string }> {
+    const response = await fetch(`${API_BASE_URL}/medicines/${medicineId}/`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  }
+
   async getNewsArticles(params?: NewsApiParams): Promise<ApiResponse<NewsArticle>> {
     return this.request<NewsArticle>('/news/', params);
   }

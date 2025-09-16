@@ -3,10 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { useMedicines, usePigs } from "@/hooks/useApi";
 import { formatCurrency } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { Eye } from "lucide-react";
 
 const Products = () => {
     // Fetch data from API
@@ -55,7 +58,7 @@ const Products = () => {
         return (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {medicinesData.data.map((medicine) => (
-                    <Card key={medicine.id}>
+                    <Card key={medicine.id} className="hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="text-xl">{medicine.name}</CardTitle>
                             <Badge variant="outline">
@@ -92,6 +95,15 @@ const Products = () => {
                                     </p>
                                 </div>
                             )}
+
+                            <div className="pt-3">
+                                <Link to={`/products/medicine/${medicine.id}`}>
+                                    <Button variant="outline" className="w-full" size="sm">
+                                        <Eye className="h-4 w-4 mr-2" />
+                                        Xem chi tiết
+                                    </Button>
+                                </Link>
+                            </div>
                         </CardContent>
                     </Card>
                 ))}
@@ -226,7 +238,7 @@ const Products = () => {
                             {!pigsLoading && !pigsError && pigsData?.data && pigsData.data.length > 0 && (
                                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {pigsData.data.map((pig) => (
-                                        <Card key={pig.id}>
+                                        <Card key={pig.id} className="hover:shadow-lg transition-shadow">
                                             <CardHeader>
                                                 <CardTitle className="text-xl">{pig.name}</CardTitle>
                                                 <Badge variant={pig.is_published ? "default" : "secondary"}>
@@ -248,6 +260,15 @@ const Products = () => {
                                                         </p>
                                                     </div>
                                                 )}
+
+                                                <div className="pt-3">
+                                                    <Link to={`/products/pig/${pig.id}`}>
+                                                        <Button variant="outline" className="w-full" size="sm">
+                                                            <Eye className="h-4 w-4 mr-2" />
+                                                            Xem chi tiết
+                                                        </Button>
+                                                    </Link>
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     ))}

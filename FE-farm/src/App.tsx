@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound";
 import Products from "./pages/Products.tsx";
+import ProductDetail from "./pages/ProductDetail.tsx";
 import News from "./pages/News.tsx";
 import NewsDetail from "./pages/NewsDetail.tsx";
 import Contact from "./pages/Contact.tsx";
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/products/:type/:id" element={<ProductDetail />} />
             <Route path="/process" element={<Process />} />
             <Route path="/services" element={<Services />} />
             <Route path="/news" element={<News />} />
