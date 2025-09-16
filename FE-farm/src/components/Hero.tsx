@@ -7,10 +7,10 @@ const Hero = () => {
   const { t } = useTranslation();
   
   const features = [
-    t("products.ggp") + ", " + t("products.gp") + ", " + t("products.ps"),
-    "Quy trình kiểm dịch nghiêm ngặt",
-    t("services.consulting"),
-    "Hỗ trợ 24/7"
+    "Nhập khẩu heo giống GGP, GP, PS từ Đan Mạch, Pháp, Đài Loan",
+    "Quy trình kiểm dịch nghiêm ngặt", 
+    "Đối tác uy tín: Axiom, Cooperl, Danish Genetics",
+    "Hỗ trợ kỹ thuật 24/7"
   ];
 
   return (
@@ -29,14 +29,15 @@ const Hero = () => {
           <div className="text-white space-y-8">
             <div className="space-y-4">
               <span className="inline-block px-4 py-2 bg-primary/20 backdrop-blur-sm text-white rounded-full text-sm font-medium">
-                #1 Nhà cung cấp giống chăn nuôi tại Việt Nam
+                Tăng trưởng 400% | Phủ sóng 63 tỉnh thành
               </span>
               <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                {t("hero.title")}
-                <span className="text-accent block">Chất Lượng Cao</span>
+                Metafarm
+                <span className="text-accent block">Heo Giống Chất Lượng Cao</span>
               </h1>
               <p className="text-xl text-gray-200 leading-relaxed">
-                {t("hero.subtitle")}
+                Công ty trẻ chuyên chăn nuôi heo, nhập khẩu và phân phối heo giống từ các quốc gia 
+                có ngành chăn nuôi phát triển. Cam kết cung cấp những con giống chất lượng cao nhất.
               </p>
             </div>
 
@@ -64,16 +65,16 @@ const Hero = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/20">
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent">15+</div>
-                <div className="text-sm text-gray-300">Năm kinh nghiệm</div>
+                <div className="text-3xl font-bold text-accent">400%</div>
+                <div className="text-sm text-gray-300">Tăng trưởng 2021-2024</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent">500+</div>
-                <div className="text-sm text-gray-300">Khách hàng tin tưởng</div>
+                <div className="text-3xl font-bold text-accent">63</div>
+                <div className="text-sm text-gray-300">Tỉnh thành phủ sóng</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent">1M+</div>
-                <div className="text-sm text-gray-300">Con giống cung cấp</div>
+                <div className="text-3xl font-bold text-accent">1000+</div>
+                <div className="text-sm text-gray-300">Đơn vị tin cậy</div>
               </div>
             </div>
           </div>

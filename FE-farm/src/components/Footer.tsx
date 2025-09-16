@@ -69,36 +69,47 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <div className="flex items-center space-x-2 mb-6">
               <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                <span className="text-primary font-bold text-xl">CN</span>
+                <span className="text-primary font-bold text-xl">MF</span>
               </div>
               <div>
-                <h3 className="text-xl font-bold">ChănNuôi Pro</h3>
-                <p className="text-primary-foreground/80 text-sm">Giống chăn nuôi chất lượng</p>
+                <h3 className="text-xl font-bold">Metafarm</h3>
+                <p className="text-primary-foreground/80 text-sm">Chăn nuôi heo chất lượng cao</p>
               </div>
             </div>
             <p className="text-primary-foreground/80 mb-6 text-sm leading-relaxed">
-              Chuyên cung cấp giống chăn nuôi chất lượng cao với hơn 15 năm kinh nghiệm. 
-              Đồng hành cùng nông dân Việt Nam phát triển chăn nuôi bền vững.
+              Công ty trẻ chuyên chăn nuôi heo, nhập khẩu và phân phối heo giống GGP, GP, PS 
+              từ các quốc gia có ngành chăn nuôi phát triển. Cam kết cung cấp những con giống 
+              chất lượng cao nhất, đảm bảo an toàn cho khách hàng.
             </p>
             
             {/* Contact Info */}
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-4 w-4 text-accent flex-shrink-0" />
-                <span className="text-sm text-primary-foreground/80">
-                  123 Đường ABC, Quận XYZ, TP.HCM
-                </span>
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-primary-foreground/80">
+                  <div className="font-medium mb-1">Văn phòng:</div>
+                  <div>4 ngách 10/461 Ng. 461 Đ. Nguyễn Văn Linh</div>
+                  <div>Sài Đồng, Long Biên, Hà Nội</div>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" />
+                <div className="text-sm text-primary-foreground/80">
+                  <div className="font-medium mb-1">Trại hạt nhân:</div>
+                  <div>Hợp tác xã Metafarm, xã Việt Hoà</div>
+                  <div>huyện Khoái Châu, tỉnh Hưng Yên</div>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-accent flex-shrink-0" />
-                <span className="text-sm text-primary-foreground/80">
-                  +84 123 456 789
-                </span>
+                <div className="text-sm text-primary-foreground/80">
+                  <div>0975 885 946 | 0868 222 136</div>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-accent flex-shrink-0" />
                 <span className="text-sm text-primary-foreground/80">
-                  info@channuoi.com
+                  info@metafarm.vn
                 </span>
               </div>
             </div>
@@ -162,7 +173,7 @@ const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-primary-foreground/80">
-              © 2024 ChănNuôi Pro. Tất cả quyền được bảo lưu.
+              © 2024 Metafarm. Tất cả quyền được bảo lưu.
             </div>
             
             {/* Social Links */}

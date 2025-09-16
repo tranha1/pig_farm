@@ -26,30 +26,52 @@ const Index = () => {
     }
   ];
 
-  const partners = ["ANT", "Deheus", "Hanofeed"];
+  const partners = [
+    // Đối tác trong nước
+    { name: "ANT", type: "domestic" },
+    { name: "Deheus", type: "domestic" },
+    { name: "Hanofeed", type: "domestic" },
+    // Đối tác quốc tế
+    { name: "Axiom (Pháp)", type: "international" },
+    { name: "Cooperl (Pháp)", type: "international" },
+    { name: "Danish Genetics (Đan Mạch)", type: "international" }
+  ];
 
   const achievements = [
     {
-      title: "Phủ sóng toàn quốc",
-      description: "Hệ thống khách hàng 63 tỉnh thành Việt Nam",
-      icon: <MapPin className="h-6 w-6 text-accent" />
-    },
-    {
-      title: "Tăng trưởng vượt trội",
-      description: "Tăng trưởng 400% trong ba năm 2021-2024",
+      title: "Tăng trưởng ấn tượng",
+      description: "Đạt mức tăng trưởng 400% trong giai đoạn từ 2021 đến 2024",
       icon: <TrendingUp className="h-6 w-6 text-accent" />
     },
     {
-      title: "Quy mô lớn",
-      description: "Cung cấp cho hàng nghìn đơn vị trung tâm giống và các trang trại",
+      title: "Hệ thống phân phối rộng khắp", 
+      description: "Có hệ thống khách hàng trải dài khắp 63 tỉnh thành tại Việt Nam",
+      icon: <MapPin className="h-6 w-6 text-accent" />
+    },
+    {
+      title: "Quy mô cung cấp lớn",
+      description: "Cung cấp heo giống cho hàng nghìn đơn vị trung tâm giống và các trang trại chăn nuôi lớn nhỏ",
       icon: <Users className="h-6 w-6 text-accent" />
     }
   ];
 
   const facilities = [
-    "Trại hạt nhân Duroc Đài Loan",
-    "Hệ thống trại GGP, GP, PS: Axiom, Cooperl, Danish Genetics",
-    "Hệ thống trang trại hạt nhân vệ tinh"
+    {
+      title: "Trại hạt nhân Duroc Đài Loan",
+      description: "Hợp tác xã Metafarm tại xã Việt Hoà, huyện Khoái Châu, tỉnh Hưng Yên"
+    },
+    {
+      title: "Hệ thống trại GGP, GP, PS",
+      description: "Bao gồm trại từ Axiom, Cooperl (Pháp) và Danish Genetics (Đan Mạch)"
+    },
+    {
+      title: "Trại xuất bán heo giống",
+      description: "Trại Metavet tại xã Ba Trại, huyện Ba Vì, Hà Nội"
+    },
+    {
+      title: "Văn phòng chính",
+      description: "4 ngách 10/461 Ng. 461 Đ. Nguyễn Văn Linh, Sài Đồng, Long Biên, Hà Nội"
+    }
   ];
 
   return (
@@ -63,12 +85,19 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-4xl font-bold text-foreground mb-4">
-                Giới thiệu về Metafarm
+                Về doanh nghiệp Metafarm
               </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Công ty trẻ với đội ngũ nhân sự có kinh nghiệm, tầm nhìn và kế hoạch rõ ràng,
-                hướng đến những giá trị cốt lõi thiết thực trong ngành chăn nuôi
+              <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                Metafarm là một công ty trẻ chuyên về chăn nuôi heo, nhập khẩu và phân phối heo giống 
+                GGP, GP, PS từ các quốc gia có ngành chăn nuôi phát triển như Đan Mạch, Pháp, và Đài Loan. 
+                Công ty cũng sản xuất, phân phối thuốc thú y và thiết bị chăn nuôi.
               </p>
+              <div className="mt-8 max-w-3xl mx-auto">
+                <p className="text-lg text-muted-foreground">
+                  Mặc dù còn non trẻ, Metafarm có đội ngũ nhân sự giàu kinh nghiệm, có tầm nhìn và kế hoạch rõ ràng. 
+                  Công ty cam kết cung cấp những con giống chất lượng cao nhất, đảm bảo an toàn cho khách hàng.
+                </p>
+              </div>
             </div>
 
             {/* Business Areas */}
@@ -100,19 +129,40 @@ const Index = () => {
             </div>
 
             {/* Partners Section */}
-            <div className="mb-16 text-center">
-              <h3 className="text-2xl font-bold text-foreground mb-6">
-                Đối tác tin cậy
+            <div className="mb-16">
+              <h3 className="text-2xl font-bold text-foreground mb-6 text-center">
+                Đối tác và khách hàng lớn
               </h3>
-              <p className="text-muted-foreground mb-8">
-                Nhiều đơn vị lớn tại Việt Nam tin cậy sản phẩm lợn giống của chúng tôi
+              <p className="text-muted-foreground mb-8 text-center">
+                Sản phẩm heo giống của Metafarm được nhiều đơn vị lớn tại Việt Nam tin dùng và có các đối tác uy tín quốc tế
               </p>
-              <div className="flex justify-center gap-4 flex-wrap">
-                {partners.map((partner, index) => (
-                  <Badge key={index} variant="secondary" className="text-lg px-6 py-2">
-                    {partner}
-                  </Badge>
-                ))}
+              
+              {/* Đối tác trong nước */}
+              <div className="mb-8">
+                <h4 className="text-lg font-semibold text-foreground mb-4 text-center">
+                  Khách hàng tin cậy tại Việt Nam
+                </h4>
+                <div className="flex justify-center gap-4 flex-wrap">
+                  {partners.filter(p => p.type === "domestic").map((partner, index) => (
+                    <Badge key={index} variant="secondary" className="text-lg px-6 py-2">
+                      {partner.name}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Đối tác quốc tế */}
+              <div>
+                <h4 className="text-lg font-semibold text-foreground mb-4 text-center">
+                  Đối tác uy tín từ Đan Mạch và Pháp
+                </h4>
+                <div className="flex justify-center gap-4 flex-wrap">
+                  {partners.filter(p => p.type === "international").map((partner, index) => (
+                    <Badge key={index} variant="outline" className="text-lg px-6 py-2 border-primary text-primary">
+                      {partner.name}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -164,12 +214,23 @@ const Index = () => {
               <h3 className="text-2xl font-bold text-foreground mb-8 text-center">
                 Hệ thống cơ sở
               </h3>
-              <div className="grid gap-4 max-w-2xl mx-auto">
+              <div className="grid gap-6 max-w-4xl mx-auto">
                 {facilities.map((facility, index) => (
-                  <div key={index} className="flex items-center gap-3 p-4 bg-muted rounded-lg">
-                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span className="text-foreground">{facility}</span>
-                  </div>
+                  <Card key={index} className="border border-border shadow-soft">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <CheckCircle className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                        <div>
+                          <h4 className="text-lg font-semibold text-foreground mb-2">
+                            {facility.title}
+                          </h4>
+                          <p className="text-muted-foreground">
+                            {facility.description}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
