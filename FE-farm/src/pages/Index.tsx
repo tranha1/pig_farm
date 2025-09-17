@@ -80,23 +80,113 @@ const Index = () => {
       <main>
         <Hero />
         
+        {/* Product Introduction Section */}
+        <section className="py-16 bg-gradient-to-b from-background to-primary/5">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-foreground mb-4">
+                SẢN PHẨM LỢN GIỐNG
+              </h2>
+              <p className="text-xl text-accent font-semibold">
+                Chất lượng cao, năng suất vượt trội
+              </p>
+            </div>
+            
+            <div className="max-w-4xl mx-auto">
+              <div className="grid gap-6">
+                <Card className="border border-primary/20 shadow-lg">
+                  <CardContent className="p-8">
+                    <div className="flex items-start space-x-3 mb-4">
+                      <span className="text-primary font-bold text-2xl">☞</span>
+                      <p className="text-lg text-muted-foreground leading-relaxed">
+                        Chúng tôi chuyên cung cấp heo dực nhân giống
+                      </p>
+                    </div>
+                    <div className="flex items-start space-x-3 mb-4">
+                      <span className="text-primary font-bold text-2xl">☞</span>
+                      <p className="text-lg text-muted-foreground leading-relaxed">
+                        Hậu bị nái thuần chủng, ngoại hình đẹp, năng suất chất lượng cao
+                      </p>
+                    </div>
+                    <div className="flex items-start space-x-3 mb-4">
+                      <span className="text-primary font-bold text-2xl">☞</span>
+                      <p className="text-lg text-muted-foreground leading-relaxed">
+                        Hậu bị 2 máu cao sản, nhập khẩu, năng suất sinh sản vượt trội
+                      </p>
+                    </div>
+                    <div className="flex items-start space-x-3 mb-4">
+                      <span className="text-primary font-bold text-2xl">☞</span>
+                      <p className="text-lg text-muted-foreground leading-relaxed">
+                        Đội ngũ kỹ thuật chuyên nghiệp, chăm sóc khách hàng nhiệt huyết, tận tâm, tận tình
+                      </p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <span className="text-primary font-bold text-2xl">☞</span>
+                      <p className="text-lg text-muted-foreground leading-relaxed">
+                        Chúng tôi phát triển bằng sự tín nhiệm, tin cậy của khách hàng
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+        
         {/* About Section - Giới thiệu về Metafarm */}
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-foreground mb-4">
-                Về doanh nghiệp Metafarm
+              <h2 className="text-4xl font-bold text-foreground mb-8">
+                GIỚI THIỆU VỀ CHÚNG TÔI
               </h2>
-              <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-                Metafarm là một công ty trẻ chuyên về chăn nuôi heo, nhập khẩu và phân phối heo giống 
-                GGP, GP, PS từ các quốc gia có ngành chăn nuôi phát triển như Đan Mạch, Pháp, và Đài Loan. 
-                Công ty cũng sản xuất, phân phối thuốc thú y và thiết bị chăn nuôi.
-              </p>
-              <div className="mt-8 max-w-3xl mx-auto">
-                <p className="text-lg text-muted-foreground">
-                  Mặc dù còn non trẻ, Metafarm có đội ngũ nhân sự giàu kinh nghiệm, có tầm nhìn và kế hoạch rõ ràng. 
-                  Công ty cam kết cung cấp những con giống chất lượng cao nhất, đảm bảo an toàn cho khách hàng.
-                </p>
+            </div>
+
+            {/* Main Company Introduction */}
+            <div className="mb-16">
+              <div className="max-w-5xl mx-auto">
+                <Card className="border border-primary/20 shadow-lg">
+                  <CardContent className="p-8">
+                    <div className="space-y-6">
+                      <div className="flex items-start space-x-4">
+                        <span className="text-primary font-bold text-xl mt-1">•</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Công ty có ngành nghề kinh doanh chính là Chăn nuôi heo, nhập khẩu, phân phối heo giống GGP, GP, PS từ các nước có nền chăn nuôi phát triển như Đan Mạch, Pháp, Đài Loan...
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-primary font-bold text-xl mt-1">•</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Sản xuất, phân phối thuốc thú y, thiết bị chăn nuôi.
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-primary font-bold text-xl mt-1">•</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Nhiều đơn vị lớn tại Việt Nam tin cậy sản phẩm lợn giống: ANT, Deheus, Hanofeed...
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-primary font-bold text-xl mt-1">•</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Là Công ty trẻ nhưng Metafarm với bộ máy nhân sự có kinh nghiệm, tầm nhìn và kế hoạch rõ ràng để hướng đến những giá trị cốt lõi thiết thực.
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-primary font-bold text-xl mt-1">•</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Qua đó, chúng tôi cam kết đem đến cho Quý khách hàng những con giống chất lượng nhất, đảm bảo về độ an toàn.
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-primary font-bold text-xl mt-1">•</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Với những đối tác chất lượng đến từ Đan Mạch, Pháp mang đến cho khách hàng những heo giống, uy tín chất lượng.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
@@ -187,10 +277,12 @@ const Index = () => {
 
             {/* Achievements */}
             <div className="mb-16">
-              <h3 className="text-2xl font-bold text-foreground mb-8 text-center">
-                Thành tựu đạt được
+              <h3 className="text-3xl font-bold text-foreground mb-8 text-center">
+                THÀNH TỰU
               </h3>
-              <div className="grid md:grid-cols-3 gap-6">
+              
+              {/* Original achievements cards */}
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
                 {achievements.map((achievement, index) => (
                   <Card key={index} className="border border-border shadow-soft hover:shadow-strong transition-all duration-300">
                     <CardContent className="p-6 text-center">
@@ -206,6 +298,49 @@ const Index = () => {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+
+              {/* Additional detailed achievements */}
+              <div className="max-w-4xl mx-auto">
+                <Card className="border border-accent/20 shadow-lg bg-gradient-to-r from-accent/5 to-primary/5">
+                  <CardContent className="p-8">
+                    <h4 className="text-2xl font-bold text-foreground mb-6 text-center">
+                      Chi tiết thành tựu đạt được
+                    </h4>
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-4">
+                        <span className="text-accent font-bold text-xl mt-1">✓</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Hệ thống khách hàng 63 tỉnh thành Việt Nam
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-accent font-bold text-xl mt-1">✓</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Tăng trưởng 400% trong ba năm 2021-2024
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-accent font-bold text-xl mt-1">✓</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Cung cấp cho hàng nghìn đơn vị trung tâm giống và các trang trại chăn nuôi lớn nhỏ
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-accent font-bold text-xl mt-1">✓</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Trại hạt nhân Duroc Đài Loan
+                        </p>
+                      </div>
+                      <div className="flex items-start space-x-4">
+                        <span className="text-accent font-bold text-xl mt-1">✓</span>
+                        <p className="text-lg text-muted-foreground leading-relaxed">
+                          Hệ thống trại GGP, GP, PS: Axiom, Cooperl, Danish Genetics
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 

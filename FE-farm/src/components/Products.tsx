@@ -9,9 +9,11 @@ import {
   Zap
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const productCategories = [
     {
@@ -150,7 +152,11 @@ const Products = () => {
             dòng giống phù hợp nhất với mục tiêu và điều kiện chăn nuôi
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="hero" size="lg">
+            <Button 
+              variant="hero" 
+              size="lg"
+              onClick={() => navigate('/contact')}
+            >
               Tư vấn miễn phí ngay
             </Button>
             <Button variant="outline" size="lg">

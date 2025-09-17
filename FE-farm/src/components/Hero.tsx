@@ -64,7 +64,12 @@ const Hero = () => {
                 Yêu cầu báo giá ngay
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-gray-600  text-foreground">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="border-white text-gray-600  text-foreground"
+                onClick={() => navigate('/products')}
+              >
                 {t("common.learn_more")}
               </Button>
             </div>
