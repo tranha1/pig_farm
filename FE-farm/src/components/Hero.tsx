@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-farm.jpg";
 
 const Hero = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   
   const features = [
     "Nhập khẩu heo giống GGP, GP, PS từ Đan Mạch, Pháp, Đài Loan",
@@ -53,7 +55,12 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="group">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="group"
+                onClick={() => navigate('/contact')}
+              >
                 Yêu cầu báo giá ngay
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
