@@ -28,7 +28,7 @@ def api_medicines(request):
         queryset = Medicine.objects.all()
         
         if published_only:
-            queryset = queryset.filter(is_published=True)
+            queryset = queryset.filter(is_published=True, is_deleted=False)
         
         if search:
             queryset = queryset.filter(name__icontains=search)
@@ -85,7 +85,7 @@ def api_pigs(request):
         queryset = Pig.objects.all()
         
         if published_only:
-            queryset = queryset.filter(is_published=True)
+            queryset = queryset.filter(is_published=True, is_deleted=False)
         
         if search:
             queryset = queryset.filter(name__icontains=search)
@@ -142,7 +142,7 @@ def api_news_articles(request):
         queryset = CmsNewsEntry.get_news_queryset()
         
         if published_only:
-            queryset = queryset.filter(is_published=True)
+            queryset = queryset.filter(is_published=True, is_deleted=False)
         
         # Note: featured_only not implemented in cms_content_entry yet
         # Could be added as a boolean field later

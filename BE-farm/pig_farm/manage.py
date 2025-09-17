@@ -17,6 +17,14 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
+def hard_delete_medicine(med_id):
+    from core import sql_models
+    sql_models.Medicine.objects.filter(id=med_id).delete()
+
+def hard_delete_pig(pig_id):
+    from core import sql_models
+    sql_models.Pig.objects.filter(id=pig_id).delete()
+
 
 if __name__ == '__main__':
     main()
