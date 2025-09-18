@@ -13,10 +13,11 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const quickLinks = [
+    { name: "Trang chủ", href: "/" },
     { name: "Sản phẩm", href: "/products" },
+    { name: "Quy trình", href: "/process" },
     { name: "Dịch vụ", href: "/services" },
     { name: "Tin tức", href: "/news" },
-    { name: "Tuyển dụng", href: "/careers" },
     { name: "Liên hệ", href: "/contact" }
   ];
 
