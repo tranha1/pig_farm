@@ -6,15 +6,39 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { useMedicines, usePigs } from "@/hooks/useApi";
+import { usePublicMedicines, usePublicPigs, useImage } from "@/hooks/useApi";
 import { formatCurrency } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { Eye } from "lucide-react";
+import { Eye, Image as ImageIcon } from "lucide-react";
+
+const ProductImage = ({ imageId, className = "w-full h-full object-cover" }: { imageId: number | null, className?: string }) => {
+  const { data: imageInfo } = useImage(imageId);
+
+  if (!imageId) {
+    return (
+      <div className={`flex items-center justify-center text-gray-400 ${className}`}>
+        <ImageIcon className="h-12 w-12" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageInfo?.url ? `http://127.0.0.1:8000${imageInfo.url}` : ''}
+      alt="Product image"
+      className={className}
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+        e.currentTarget.nextElementSibling!.classList.remove('hidden');
+      }}
+    />
+  );
+};
 
 const Products = () => {
     // Fetch data from API
-    const { data: medicinesData, isLoading: medicinesLoading, error: medicinesError } = useMedicines({ published: true });
-    const { data: pigsData, isLoading: pigsLoading, error: pigsError } = usePigs({ published: true });
+    const { data: medicinesData, isLoading: medicinesLoading, error: medicinesError } = usePublicMedicines({ published: true });
+    const { data: pigsData, isLoading: pigsLoading, error: pigsError } = usePublicPigs({ published: true });
 
     const renderMedicines = () => {
         if (medicinesLoading) {
@@ -66,6 +90,14 @@ const Products = () => {
                             </Badge>
                         </CardHeader>
                         <CardContent className="space-y-3">
+                            {/* Image */}
+                            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                                <ProductImage imageId={medicine.cover_image_id} />
+                                <div className="w-full h-full flex items-center justify-center text-gray-400 hidden">
+                                    <ImageIcon className="h-12 w-12" />
+                                </div>
+                            </div>
+
                             {medicine.packaging && (
                                 <div>
                                     <h4 className="font-semibold text-foreground mb-1">ĐÓNG GÓI</h4>
@@ -246,6 +278,14 @@ const Products = () => {
                                                 </Badge>
                                             </CardHeader>
                                             <CardContent className="space-y-3">
+                                                {/* Image */}
+                                                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                                                    <ProductImage imageId={pig.cover_image_id} />
+                                                    <div className="w-full h-full flex items-center justify-center text-gray-400 hidden">
+                                                        <ImageIcon className="h-12 w-12" />
+                                                    </div>
+                                                </div>
+
                                                 {pig.price && (
                                                     <div className="flex justify-between items-center">
                                                         <span className="text-sm text-muted-foreground">Giá:</span>

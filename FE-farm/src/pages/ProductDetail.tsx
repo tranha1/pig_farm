@@ -18,13 +18,39 @@ import {
   Star,
   Info,
   Award,
-  Truck
+  Truck,
+  Image as ImageIcon
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useProductDetail } from "@/hooks/useProductDetail";
-import { usePigs, useMedicines } from "@/hooks/useApi";
+import { usePublicPigs, usePublicMedicines } from "@/hooks/useApi";
+import { useImage } from "@/hooks/useApi";
 import { formatCurrency } from "@/lib/utils";
+
+const ProductImage = ({ imageId, className = "w-full h-full object-cover" }: { imageId: number | null, className?: string }) => {
+  const { data: imageInfo } = useImage(imageId);
+
+  if (!imageId) {
+    return (
+      <div className={`flex items-center justify-center text-gray-400 ${className}`}>
+        <ImageIcon className="h-12 w-12" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageInfo?.url ? `http://127.0.0.1:8000${imageInfo.url}` : ''}
+      alt="Product image"
+      className={className}
+      onError={(e) => {
+        e.currentTarget.style.display = 'none';
+        e.currentTarget.nextElementSibling!.classList.remove('hidden');
+      }}
+    />
+  );
+};
 
 const ProductDetail = () => {
   const { type, id } = useParams<{ type: 'pig' | 'medicine'; id: string }>();
@@ -33,8 +59,8 @@ const ProductDetail = () => {
   const { product, loading, error } = useProductDetail(type!, productId);
   
   // Get related products
-  const { data: pigsData } = usePigs({ published: true });
-  const { data: medicinesData } = useMedicines({ published: true });
+  const { data: pigsData } = usePublicPigs({ published: true });
+  const { data: medicinesData } = usePublicMedicines({ published: true });
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -66,10 +92,10 @@ const ProductDetail = () => {
   };
 
   const getRelatedProducts = () => {
-    if (type === 'pig' && pigsData?.data) {
-      return pigsData.data.filter(p => p.id !== productId).slice(0, 3);
-    } else if (type === 'medicine' && medicinesData?.data) {
-      return medicinesData.data.filter(m => m.id !== productId).slice(0, 3);
+    if (type === 'pig' && pigsData) {
+      return pigsData.filter(p => p.id !== productId).slice(0, 3);
+    } else if (type === 'medicine' && medicinesData) {
+      return medicinesData.filter(m => m.id !== productId).slice(0, 3);
     }
     return [];
   };
@@ -190,15 +216,17 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Product Image Placeholder */}
+              {/* Product Image */}
               <div className="mb-8">
-                <div className="bg-muted rounded-lg h-96 flex items-center justify-center">
-                  <div className="text-center">
-                    <Package className="h-24 w-24 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">Hình ảnh sản phẩm</p>
-                    <p className="text-sm text-muted-foreground">{product.name}</p>
-                  </div>
+                <div className="bg-muted rounded-lg overflow-hidden max-h-96 flex items-center justify-center">
+                  <ProductImage imageId={product.cover_image_id} className="w-full h-full object-contain max-h-96" />
                 </div>
+                {!product.cover_image_id && (
+                  <div className="w-full h-96 flex items-center justify-center text-gray-400 bg-gray-100 rounded-lg">
+                    <ImageIcon className="h-24 w-24" />
+                    <span className="ml-2 text-lg">No image available</span>
+                  </div>
+                )}
               </div>
 
               {/* Product Features */}

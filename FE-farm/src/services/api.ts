@@ -78,6 +78,7 @@ export interface ApiResponse<T> {
 export interface ApiParams {
   skip?: number;
   limit?: number;
+  published?: boolean;
 }
 
 class ApiService {

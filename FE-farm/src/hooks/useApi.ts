@@ -163,6 +163,25 @@ export const useDeleteNewsArticle = () => {
   });
 };
 
+// Public hooks for customer-facing pages (no authentication required)
+export const usePublicMedicines = (params?: ApiParams) => {
+  return useQuery({
+    queryKey: ['public-medicines', params],
+    queryFn: () => apiService.getMedicines(params),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+export const usePublicPigs = (params?: ApiParams) => {
+  return useQuery({
+    queryKey: ['public-pigs', params],
+    queryFn: () => apiService.getPigs(params),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+};
+
 // Image hook
 export const useImage = (imageId: number | null) => {
   return useQuery({
