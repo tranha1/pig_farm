@@ -40,15 +40,29 @@ const ProductImage = ({ imageId, className = "w-full h-full object-cover" }: { i
   }
 
   return (
-    <img
-      src={imageInfo?.url ? `http://127.0.0.1:8000${imageInfo.url}` : ''}
-      alt="Product image"
-      className={className}
-      onError={(e) => {
-        e.currentTarget.style.display = 'none';
-        e.currentTarget.nextElementSibling!.classList.remove('hidden');
-      }}
-    />
+    <div className="relative w-full h-full">
+      <img
+        src={imageInfo?.url ? `http://127.0.0.1:8000${imageInfo.url}` : ''}
+        alt="Product image"
+        className={className}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+          const fallback = e.currentTarget.parentElement?.querySelector('.image-fallback') as HTMLElement;
+          if (fallback) {
+            fallback.classList.remove('hidden');
+          }
+        }}
+        onLoad={(e) => {
+          const fallback = e.currentTarget.parentElement?.querySelector('.image-fallback') as HTMLElement;
+          if (fallback) {
+            fallback.classList.add('hidden');
+          }
+        }}
+      />
+      <div className="image-fallback absolute inset-0 flex items-center justify-center text-gray-400">
+        <ImageIcon className="h-12 w-12" />
+      </div>
+    </div>
   );
 };
 
