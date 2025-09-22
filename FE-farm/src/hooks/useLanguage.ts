@@ -24,16 +24,7 @@ export const useLanguage = () => {
       // Change language in i18next
       await i18n.changeLanguage(languageCode);
       
-      // Notify backend about language change
-      await fetch(`${API_BASE_URL}/api/v1/set-language/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ language: languageCode }),
-      });
-
+      // Skip backend API call since it's not implemented
       // Store in localStorage
       localStorage.setItem('i18nextLng', languageCode);
       
@@ -45,18 +36,9 @@ export const useLanguage = () => {
   };
 
   const fetchLanguageInfo = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/language-info/`, {
-        credentials: 'include',
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setAvailableLanguages(data.available_languages);
-      }
-    } catch (error) {
-      console.error('Error fetching language info:', error);
-    }
+    // Skip API call since backend doesn't support language endpoints
+    // Just use the default available languages
+    return;
   };
 
   useEffect(() => {

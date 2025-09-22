@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useNewsDetailBySlug } from '@/hooks/useNewsDetail';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,20 +13,56 @@ import {
   Share2,
   Facebook,
   Twitter,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Image as ImageIcon
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useNewsDetailBySlug } from "@/hooks/useNewsDetail";
-import { useNews } from "@/hooks/useNews";
+import { useImage } from "@/hooks/useApi";
 import { NewsArticle } from "@/services/api";
 
+const ProductImage = ({ imageId, className = "w-full h-full object-cover" }: { imageId: number | null, className?: string }) => {
+  const { data: imageInfo } = useImage(imageId);
+
+  if (!imageId) {
+    return (
+      <div className={`flex items-center justify-center text-gray-400 ${className}`}>
+        <ImageIcon className="h-12 w-12" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-full">
+      <img
+        src={imageInfo?.url ? `http://127.0.0.1:8000${imageInfo.url}` : ''}
+        alt="News image"
+        className={className}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none';
+          const fallback = e.currentTarget.parentElement?.querySelector('.image-fallback') as HTMLElement;
+          if (fallback) {
+            fallback.classList.remove('hidden');
+          }
+        }}
+        onLoad={(e) => {
+          const fallback = e.currentTarget.parentElement?.querySelector('.image-fallback') as HTMLElement;
+          if (fallback) {
+            fallback.classList.add('hidden');
+          }
+        }}
+      />
+      <div className="image-fallback absolute inset-0 flex items-center justify-center text-gray-400">
+        <ImageIcon className="h-12 w-12" />
+      </div>
+    </div>
+  );
+};
+
 const NewsDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { article, loading, error } = useNewsDetail(id || "");
-  const { articles: relatedArticles } = useNews(); // For related articles
+  const { article, loading, error } = useNewsDetailBySlug(slug || "");
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -56,14 +92,6 @@ const NewsDetail = () => {
         // Could add a toast notification here
         break;
     }
-  };
-
-  const getRelatedArticles = (): NewsArticle[] => {
-    if (!article || !relatedArticles.length) return [];
-    
-    return relatedArticles
-      .filter(item => item.id !== article.id)
-      .slice(0, 3);
   };
 
   const LoadingSkeleton = () => (
@@ -159,10 +187,10 @@ const NewsDetail = () => {
 
             {/* Article Meta */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
-              {article.author && (
+              {article.author_name && (
                 <div className="flex items-center gap-1">
                   <User className="h-4 w-4" />
-                  <span>{article.author}</span>
+                  <span>{article.author_name}</span>
                 </div>
               )}
               
@@ -171,30 +199,14 @@ const NewsDetail = () => {
                 <span>{formatDate(article.published_at)}</span>
               </div>
               
-              {article.read_time && (
-                <div className="flex items-center gap-1">
-                  <Clock className="h-4 w-4" />
-                  <span>{article.read_time} phút đọc</span>
-                </div>
-              )}
-              
               <div className="flex items-center gap-1">
-                <Eye className="h-4 w-4" />
-                <span>{article.view_count} lượt xem</span>
+                <Clock className="h-4 w-4" />
+                <span>{article.id} ID</span>
               </div>
             </div>
 
-            {/* Tags */}
-            {article.tags && article.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {article.tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            )}
-
+            {/* Tags - Removed as not available in NewsArticle interface */}
+            
             {/* Share Buttons */}
             <div className="flex items-center gap-2 mb-6">
               <span className="text-sm font-medium mr-2">Chia sẻ:</span>
@@ -223,20 +235,18 @@ const NewsDetail = () => {
           </header>
 
           {/* Featured Image */}
-          {article.featured_image && (
+          {article.cover_image_id && (
             <div className="mb-8">
-              <img
-                src={article.featured_image}
-                alt={article.title}
-                className="w-full h-auto rounded-lg shadow-md"
-              />
+              <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden">
+                <ProductImage imageId={article.cover_image_id} className="w-full h-full object-cover" />
+              </div>
             </div>
           )}
 
           {/* Article Content */}
           <article className="prose prose-lg max-w-none mb-12">
             <div 
-              dangerouslySetInnerHTML={{ __html: article.content || '' }}
+              dangerouslySetInnerHTML={{ __html: article.body_html || '' }}
               className="text-foreground leading-relaxed"
             />
           </article>
@@ -271,38 +281,6 @@ const NewsDetail = () => {
               </div>
             </div>
           </footer>
-
-          {/* Related Articles */}
-          {getRelatedArticles().length > 0 && (
-            <section>
-              <h2 className="text-2xl font-bold mb-6">Bài viết liên quan</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {getRelatedArticles().map((relatedArticle) => (
-                  <Card key={relatedArticle.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-2 line-clamp-2">
-                        <Link 
-                          to={`/news/${relatedArticle.slug}`}
-                          className="hover:text-primary transition-colors"
-                        >
-                          {relatedArticle.title}
-                        </Link>
-                      </h3>
-                      {relatedArticle.summary && (
-                        <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
-                          {relatedArticle.summary}
-                        </p>
-                      )}
-                      <div className="flex items-center text-xs text-muted-foreground">
-                        <Calendar className="h-3 w-3 mr-1" />
-                        {formatDate(relatedArticle.published_at)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </main>
       

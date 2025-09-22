@@ -4,12 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { usePublicMedicines, usePublicPigs, useImage } from "@/hooks/useApi";
 import { formatCurrency } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { Eye, Image as ImageIcon } from "lucide-react";
+import { useState } from "react";
 
 const ProductImage = ({ imageId, className = "w-full h-full object-cover" }: { imageId: number | null, className?: string }) => {
   const { data: imageInfo } = useImage(imageId);
@@ -49,10 +51,99 @@ const ProductImage = ({ imageId, className = "w-full h-full object-cover" }: { i
   );
 };
 
+const PaginationComponent = ({ 
+  currentPage, 
+  totalPages, 
+  onPageChange 
+}: { 
+  currentPage: number; 
+  totalPages: number; 
+  onPageChange: (page: number) => void; 
+}) => {
+  if (totalPages <= 1) return null;
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
+  return (
+    <Pagination className="mt-8">
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious 
+            onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
+            className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+          />
+        </PaginationItem>
+        
+        {getPageNumbers().map((page, index) => (
+          <PaginationItem key={index}>
+            {page === '...' ? (
+              <PaginationEllipsis />
+            ) : (
+              <PaginationLink
+                onClick={() => onPageChange(page as number)}
+                isActive={currentPage === page}
+                className="cursor-pointer"
+              >
+                {page}
+              </PaginationLink>
+            )}
+          </PaginationItem>
+        ))}
+        
+        <PaginationItem>
+          <PaginationNext 
+            onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
+            className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+};
+
 const Products = () => {
-    // Fetch data from API
-    const { data: medicinesData, isLoading: medicinesLoading, error: medicinesError } = usePublicMedicines({ published: true });
-    const { data: pigsData, isLoading: pigsLoading, error: pigsError } = usePublicPigs({ published: true });
+    // Pagination state
+    const [medicinesPage, setMedicinesPage] = useState(1);
+    const [pigsPage, setPigsPage] = useState(1);
+    const itemsPerPage = 9; // 3x3 grid
+
+    // Fetch data from API with pagination
+    const { data: medicinesData, isLoading: medicinesLoading, error: medicinesError } = usePublicMedicines({ 
+        published: true, 
+        skip: (medicinesPage - 1) * itemsPerPage, 
+        limit: itemsPerPage 
+    });
+    const { data: pigsData, isLoading: pigsLoading, error: pigsError } = usePublicPigs({ 
+        published: true, 
+        skip: (pigsPage - 1) * itemsPerPage, 
+        limit: itemsPerPage 
+    });
+
+    // Get total counts for pagination (we'll need to fetch without pagination for totals)
+    const { data: allMedicines } = usePublicMedicines({ published: true });
+    const { data: allPigs } = usePublicPigs({ published: true });
+
+    const totalMedicinesPages = Math.ceil((allMedicines?.length || 0) / itemsPerPage);
+    const totalPigsPages = Math.ceil((allPigs?.length || 0) / itemsPerPage);
 
     const renderMedicines = () => {
         if (medicinesLoading) {
@@ -94,62 +185,70 @@ const Products = () => {
         }
 
         return (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {medicinesData.map((medicine) => (
-                    <Card key={medicine.id} className="hover:shadow-lg transition-shadow">
-                        <CardHeader>
-                            <CardTitle className="text-xl">{medicine.name}</CardTitle>
-                            <Badge variant="outline">
-                                {medicine.is_published ? 'Có sẵn' : 'Hết hàng'}
-                            </Badge>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {/* Image */}
-                            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                                <ProductImage imageId={medicine.cover_image_id} />
-                            </div>
-
-                            {medicine.packaging && (
-                                <div>
-                                    <h4 className="font-semibold text-foreground mb-1">ĐÓNG GÓI</h4>
-                                    <p className="text-sm text-muted-foreground">{medicine.packaging}</p>
+            <div className="space-y-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {medicinesData.map((medicine) => (
+                        <Card key={medicine.id} className="hover:shadow-lg transition-shadow">
+                            <CardHeader>
+                                <CardTitle className="text-xl">{medicine.name}</CardTitle>
+                                <Badge variant="outline">
+                                    {medicine.is_published ? 'Có sẵn' : 'Hết hàng'}
+                                </Badge>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {/* Image */}
+                                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                                    <ProductImage imageId={medicine.cover_image_id} />
                                 </div>
-                            )}
-                            
-                            <div className="space-y-2">
-                                {medicine.price_unit && (
-                                    <div className="flex justify-between">
-                                        <span className="text-sm text-muted-foreground">Giá đơn vị:</span>
-                                        <span className="font-semibold">{formatCurrency(medicine.price_unit)}</span>
+
+                                {medicine.packaging && (
+                                    <div>
+                                        <h4 className="font-semibold text-foreground mb-1">ĐÓNG GÓI</h4>
+                                        <p className="text-sm text-muted-foreground">{medicine.packaging}</p>
                                     </div>
                                 )}
-                                {medicine.price_total && (
-                                    <div className="flex justify-between">
-                                        <span className="text-sm text-muted-foreground">Giá tổng:</span>
-                                        <span className="font-semibold">{formatCurrency(medicine.price_total)}</span>
+                                
+                                <div className="space-y-2">
+                                    {medicine.price_unit && (
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-muted-foreground">Giá đơn vị:</span>
+                                            <span className="font-semibold">{formatCurrency(medicine.price_unit)}</span>
+                                        </div>
+                                    )}
+                                    {medicine.price_total && (
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-muted-foreground">Giá tổng:</span>
+                                            <span className="font-semibold">{formatCurrency(medicine.price_total)}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {medicine.updated_at && (
+                                    <div className="pt-2 border-t">
+                                        <p className="text-xs text-muted-foreground">
+                                            Cập nhật: {new Date(medicine.updated_at).toLocaleDateString('vi-VN')}
+                                        </p>
                                     </div>
                                 )}
-                            </div>
 
-                            {medicine.updated_at && (
-                                <div className="pt-2 border-t">
-                                    <p className="text-xs text-muted-foreground">
-                                        Cập nhật: {new Date(medicine.updated_at).toLocaleDateString('vi-VN')}
-                                    </p>
+                                <div className="pt-3">
+                                    <Link to={`/products/medicine/${medicine.id}`}>
+                                        <Button variant="outline" className="w-full" size="sm">
+                                            <Eye className="h-4 w-4 mr-2" />
+                                            Xem chi tiết
+                                        </Button>
+                                    </Link>
                                 </div>
-                            )}
-
-                            <div className="pt-3">
-                                <Link to={`/products/medicine/${medicine.id}`}>
-                                    <Button variant="outline" className="w-full" size="sm">
-                                        <Eye className="h-4 w-4 mr-2" />
-                                        Xem chi tiết
-                                    </Button>
-                                </Link>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+                
+                <PaginationComponent 
+                    currentPage={medicinesPage} 
+                    totalPages={totalMedicinesPages} 
+                    onPageChange={setMedicinesPage} 
+                />
             </div>
         );
     };
@@ -279,47 +378,55 @@ const Products = () => {
                             )}
                             
                             {!pigsLoading && !pigsError && pigsData && pigsData.length > 0 && (
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {pigsData.map((pig) => (
-                                        <Card key={pig.id} className="hover:shadow-lg transition-shadow">
-                                            <CardHeader>
-                                                <CardTitle className="text-xl">{pig.name}</CardTitle>
-                                                <Badge variant={pig.is_published ? "default" : "secondary"}>
-                                                    {pig.is_published ? 'Có sẵn' : 'Hết hàng'}
-                                                </Badge>
-                                            </CardHeader>
-                                            <CardContent className="space-y-3">
-                                                {/* Image */}
-                                                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                                                    <ProductImage imageId={pig.cover_image_id} />
-                                                </div>
-
-                                                {pig.price && (
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-sm text-muted-foreground">Giá:</span>
-                                                        <span className="font-semibold text-lg">{formatCurrency(pig.price)}</span>
+                                <div className="space-y-8">
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {pigsData.map((pig) => (
+                                            <Card key={pig.id} className="hover:shadow-lg transition-shadow">
+                                                <CardHeader>
+                                                    <CardTitle className="text-xl">{pig.name}</CardTitle>
+                                                    <Badge variant={pig.is_published ? "default" : "secondary"}>
+                                                        {pig.is_published ? 'Có sẵn' : 'Hết hàng'}
+                                                    </Badge>
+                                                </CardHeader>
+                                                <CardContent className="space-y-3">
+                                                    {/* Image */}
+                                                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                                                        <ProductImage imageId={pig.cover_image_id} />
                                                     </div>
-                                                )}
-                                                
-                                                {pig.updated_at && (
-                                                    <div className="pt-2 border-t">
-                                                        <p className="text-xs text-muted-foreground">
-                                                            Cập nhật: {new Date(pig.updated_at).toLocaleDateString('vi-VN')}
-                                                        </p>
-                                                    </div>
-                                                )}
 
-                                                <div className="pt-3">
-                                                    <Link to={`/products/pig/${pig.id}`}>
-                                                        <Button variant="outline" className="w-full" size="sm">
-                                                            <Eye className="h-4 w-4 mr-2" />
-                                                            Xem chi tiết
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
+                                                    {pig.price && (
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-sm text-muted-foreground">Giá:</span>
+                                                            <span className="font-semibold text-lg">{formatCurrency(pig.price)}</span>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {pig.updated_at && (
+                                                        <div className="pt-2 border-t">
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Cập nhật: {new Date(pig.updated_at).toLocaleDateString('vi-VN')}
+                                                            </p>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="pt-3">
+                                                        <Link to={`/products/pig/${pig.id}`}>
+                                                            <Button variant="outline" className="w-full" size="sm">
+                                                                <Eye className="h-4 w-4 mr-2" />
+                                                                Xem chi tiết
+                                                            </Button>
+                                                        </Link>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                    
+                                    <PaginationComponent 
+                                        currentPage={pigsPage} 
+                                        totalPages={totalPigsPages} 
+                                        onPageChange={setPigsPage} 
+                                    />
                                 </div>
                             )}
                         </section>

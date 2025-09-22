@@ -6,10 +6,80 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Calendar, Clock, Eye, User, Search, Filter } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { apiService, NewsArticle, NewsCategory, NewsApiParams } from "@/services/api";
+
+const PaginationComponent = ({ 
+  currentPage, 
+  totalPages, 
+  onPageChange 
+}: { 
+  currentPage: number; 
+  totalPages: number; 
+  onPageChange: (page: number) => void; 
+}) => {
+  if (totalPages <= 1) return null;
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
+  return (
+    <Pagination className="mt-8">
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious 
+            onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
+            className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+          />
+        </PaginationItem>
+        
+        {getPageNumbers().map((page, index) => (
+          <PaginationItem key={index}>
+            {page === '...' ? (
+              <PaginationEllipsis />
+            ) : (
+              <PaginationLink
+                onClick={() => onPageChange(page as number)}
+                isActive={currentPage === page}
+                className="cursor-pointer"
+              >
+                {page}
+              </PaginationLink>
+            )}
+          </PaginationItem>
+        ))}
+        
+        <PaginationItem>
+          <PaginationNext 
+            onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
+            className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+};
 
 const News = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
@@ -18,31 +88,63 @@ const News = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [totalArticles, setTotalArticles] = useState(0);
+  const [allArticles, setAllArticles] = useState<NewsArticle[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<NewsArticle[]>([]);
+  const [articlesPerPage] = useState(12);
 
-  const fetchArticles = async (params?: NewsApiParams) => {
+  const fetchArticles = async () => {
     try {
-      const data = await apiService.getNewsArticles({
-        limit: 12,
-        skip: (currentPage - 1) * 12,
-        ...params
-      });
-
-      if (params?.page === 1) {
-        setArticles(data);
-      } else {
-        setArticles(prev => [...prev, ...data]);
-      }
+      setLoading(true);
+      setError(null);
       
-      // For now, assume single page since we don't have pagination
-      setTotalPages(1);
+      // Fetch all articles for client-side filtering and pagination
+      const data = await apiService.getNewsArticles({
+        limit: 1000, // Large limit to get all articles
+        skip: 0,
+        published: true
+      });
+      
+      setAllArticles(data);
+      setTotalArticles(data.length);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Filter and paginate articles
+  useEffect(() => {
+    let filtered = allArticles.filter(article => {
+      // Filter by search term
+      if (searchTerm && !article.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
+          !article.summary?.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      // Filter by category
+      if (selectedCategory && selectedCategory !== "all" && article.kind_id.toString() !== selectedCategory) {
+        return false;
+      }
+      return true;
+    });
+
+    setFilteredArticles(filtered);
+    
+    // Reset to page 1 when filters change
+    if (currentPage > 1) {
+      setCurrentPage(1);
+    }
+  }, [allArticles, searchTerm, selectedCategory]);
+
+  // Paginate filtered articles
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * articlesPerPage;
+    const endIndex = startIndex + articlesPerPage;
+    const paginatedArticles = filteredArticles.slice(startIndex, endIndex);
+    setArticles(paginatedArticles);
+  }, [filteredArticles, currentPage, articlesPerPage]);
 
   const fetchCategories = async () => {
     // For now, we'll use hardcoded categories since CMS doesn't have categories
@@ -55,30 +157,20 @@ const News = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      setCurrentPage(1);
-      
       await Promise.all([
-        fetchArticles({ page: 1 }),
+        fetchArticles(),
         fetchCategories()
       ]);
-      
-      setLoading(false);
     };
 
     fetchData();
-  }, [searchTerm, selectedCategory, showFeaturedOnly]);
+  }, []);
 
-  const handleLoadMore = async () => {
-    if (currentPage >= totalPages || isLoadingMore) return;
-    
-    setIsLoadingMore(true);
-    const nextPage = currentPage + 1;
-    setCurrentPage(nextPage);
-    
-    await fetchArticles({ page: nextPage });
-    setIsLoadingMore(false);
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
+
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
@@ -101,7 +193,7 @@ const News = () => {
 
   const NewsCard = ({ article }: { article: NewsArticle }) => (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-      <Link to={`/news/${article.id}`} className="block">
+      <Link to={`/news/${article.slug}`} className="block">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Badge variant="secondary" className="text-xs">
@@ -140,7 +232,7 @@ const News = () => {
       
       <CardContent className="pt-0">
         <Button className="w-full" variant="outline" asChild>
-          <Link to={`/news/${article.id}`}>
+          <Link to={`/news/${article.slug}`}>
             Đọc thêm
           </Link>
         </Button>
@@ -217,15 +309,6 @@ const News = () => {
               ))}
             </SelectContent>
           </Select>
-          
-          <Button
-            variant={showFeaturedOnly ? "default" : "outline"}
-            onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
-            className="w-full md:w-auto"
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            Nổi bật
-          </Button>
         </div>
 
         {/* Content */}
@@ -241,65 +324,39 @@ const News = () => {
         ) : articles.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground mb-4">
-              Không tìm thấy bài viết nào
+              {filteredArticles.length === 0 ? "Không tìm thấy bài viết nào" : "Không có bài viết nào trên trang này"}
             </p>
             <Button onClick={() => {
               setSearchTerm("");
               setSelectedCategory("all");
-              setShowFeaturedOnly(false);
+              setCurrentPage(1);
             }}>
               Xóa bộ lọc
             </Button>
           </div>
         ) : (
           <>
-            {/* Featured Articles */}
-            {articles.some(article => article.is_featured) && !searchTerm && selectedCategory === "all" && (
-              <div className="mb-12">
-                <h2 className="text-2xl font-bold mb-6">Bài viết nổi bật</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {articles
-                    .filter(article => article.is_featured)
-                    .slice(0, 2)
-                    .map((article) => (
-                      <NewsCard key={article.id} article={article} />
-                    ))}
-                </div>
-              </div>
-            )}
-
             {/* All Articles */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {articles
-                .filter(article => {
-                  // Filter by search term
-                  if (searchTerm && !article.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
-                      !article.summary?.toLowerCase().includes(searchTerm.toLowerCase())) {
-                    return false;
-                  }
-                  // Filter by category
-                  if (selectedCategory && selectedCategory !== "all" && article.kind_id.toString() !== selectedCategory) {
-                    return false;
-                  }
-                  return true;
-                })
-                .map((article) => (
-                  <NewsCard key={article.id} article={article} />
-                ))}
+              {articles.map((article) => (
+                <NewsCard key={article.id} article={article} />
+              ))}
             </div>
 
-            {/* Load More */}
-            {currentPage < totalPages && (
-              <div className="text-center mt-12">
-                <Button
-                  onClick={handleLoadMore}
-                  disabled={isLoadingMore}
-                  size="lg"
-                >
-                  {isLoadingMore ? "Đang tải..." : "Xem thêm bài viết"}
-                </Button>
-              </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <PaginationComponent 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                onPageChange={handlePageChange} 
+              />
             )}
+
+            {/* Results info */}
+            <div className="text-center text-sm text-muted-foreground mt-4">
+              Hiển thị {articles.length} / {filteredArticles.length} bài viết
+              {filteredArticles.length !== totalArticles && ` (lọc từ ${totalArticles} bài viết)`}
+            </div>
           </>
         )}
         </div>
