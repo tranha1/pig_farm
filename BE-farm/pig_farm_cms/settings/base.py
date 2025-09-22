@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import shlex
 from urllib.parse import parse_qs, urlparse
 
 from django.core.exceptions import ImproperlyConfigured
@@ -342,4 +343,23 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 # This can be omitted to allow all files, but note that this may present a security risk
 # if untrusted users are allowed to upload files -
 # see https://docs.wagtail.org/en/stable/advanced_topics/deploying.html#user-uploaded-files
-WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
+WAGTAILDOCS_EXTENSIONS = [
+    "csv",
+    "docx",
+    "key",
+    "odt",
+    "pdf",
+    "pptx",
+    "rtf",
+    "txt",
+    "xlsx",
+]
+
+
+# Archive handling
+DOCUMENT_ARCHIVE_MAX_MEMBER_SIZE = 20 * 1024 * 1024  # 20 MB per extracted file
+DOCUMENT_ARCHIVE_MAX_COMPRESSION_RATIO = 100
+
+_scan_command = os.environ.get("DOCUMENT_ARCHIVE_SCAN_COMMAND", "").strip()
+DOCUMENT_ARCHIVE_SCAN_COMMAND = shlex.split(_scan_command) if _scan_command else None
+DOCUMENT_ARCHIVE_SCAN_SUCCESS_CODES = {0}
