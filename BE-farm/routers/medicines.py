@@ -44,7 +44,7 @@ def read_medicines(skip: int = 0, limit: int = 100, published: Optional[bool] = 
     query = db.query(ProductMedicine)
     if published is not None:
         query = query.filter(ProductMedicine.is_published == published)
-    medicines = query.offset(skip).limit(limit).all()
+    medicines = query.order_by(ProductMedicine.created_at.desc()).offset(skip).limit(limit).all()
     return medicines
 
 @router.get("/{medicine_id}", response_model=Medicine)

@@ -38,7 +38,7 @@ def read_pigs(skip: int = 0, limit: int = 100, published: bool = None, db: Sessi
     query = db.query(ProductPig)
     if published is not None:
         query = query.filter(ProductPig.is_published == published)
-    pigs = query.offset(skip).limit(limit).all()
+    pigs = query.order_by(ProductPig.created_at.desc()).offset(skip).limit(limit).all()
     return pigs
 
 @router.get("/{pig_id}", response_model=Pig)

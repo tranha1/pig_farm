@@ -41,7 +41,7 @@ def read_cms(skip: int = 0, limit: int = 100, published: Optional[bool] = None, 
     query = db.query(CmsContentEntry)
     if published is not None:
         query = query.filter(CmsContentEntry.is_published == published)
-    cms = query.offset(skip).limit(limit).all()
+    cms = query.order_by(CmsContentEntry.created_at.desc()).offset(skip).limit(limit).all()
     return cms
 
 @router.get("/{cms_id}", response_model=Cms)
