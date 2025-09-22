@@ -2,11 +2,15 @@ from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import (
     LuUnit, LuDoseUnit, LuMedicineCategory, LuPigType, LuContentKind,
-    ProductPig, ProductMedicine, CmsContentEntry
+    ProductPig, ProductMedicine, CmsContentEntry, User
 )
 from faker import Faker
 import random
 from datetime import datetime, timezone
+from passlib.context import CryptContext
+
+fake = Faker()
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 fake = Faker()
 
@@ -70,6 +74,26 @@ def seed_lookup_tables(db: Session):
 
     db.commit()
 
+def create_admin_user(db: Session):
+    """Create admin user if not exists"""
+    admin_user = db.query(User).filter(User.username == "admin").first()
+    if not admin_user:
+        hashed_password = pwd_context.hash("admin123")
+        admin_user = User(
+            username="admin",
+            email="admin@pigfarm.com",
+            hashed_password=hashed_password,
+            role="admin",
+            is_active=True,
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
+        )
+        db.add(admin_user)
+        db.commit()
+        print("Admin user created: username=admin, password=admin123")
+    else:
+        print("Admin user already exists")
+
 def seed_sample_data(db: Session):
     # Get existing lookup data
     units = db.query(LuUnit).all()
@@ -132,6 +156,7 @@ if __name__ == "__main__":
     db = SessionLocal()
     try:
         seed_lookup_tables(db)
+        create_admin_user(db)
         seed_sample_data(db)
         print("Sample data seeded successfully!")
     finally:

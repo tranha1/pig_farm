@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import pigs, medicines, cms
+from fastapi.staticfiles import StaticFiles
+from routers import pigs, medicines, cms, auth, images
 
 app = FastAPI(title="Pig Farm API", version="1.0.0")
 
@@ -13,9 +14,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(pigs.router, prefix="/api/pigs", tags=["Pigs"])
 app.include_router(medicines.router, prefix="/api/medicines", tags=["Medicines"])
 app.include_router(cms.router, prefix="/api/cms", tags=["CMS"])
+app.include_router(images.router, prefix="/api/images", tags=["Images"])
 
 @app.get("/")
 def read_root():

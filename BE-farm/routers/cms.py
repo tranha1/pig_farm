@@ -5,6 +5,7 @@ from datetime import datetime
 from database import get_db
 from models import CmsContentEntry
 from pydantic import BaseModel
+from .auth import get_current_active_user, require_role
 
 router = APIRouter()
 
@@ -51,7 +52,7 @@ def read_cms_entry(cms_id: int, db: Session = Depends(get_db)):
     return cms
 
 @router.post("/", response_model=Cms)
-def create_cms(cms: CmsCreate, db: Session = Depends(get_db)):
+def create_cms(cms: CmsCreate, db: Session = Depends(get_db), current_user = Depends(require_role("staff"))):
     db_cms = CmsContentEntry(**cms.dict())
     db.add(db_cms)
     db.commit()
@@ -59,7 +60,7 @@ def create_cms(cms: CmsCreate, db: Session = Depends(get_db)):
     return db_cms
 
 @router.put("/{cms_id}", response_model=Cms)
-def update_cms(cms_id: int, cms: CmsCreate, db: Session = Depends(get_db)):
+def update_cms(cms_id: int, cms: CmsCreate, db: Session = Depends(get_db), current_user = Depends(require_role("staff"))):
     db_cms = db.query(CmsContentEntry).filter(CmsContentEntry.id == cms_id).first()
     if db_cms is None:
         raise HTTPException(status_code=404, detail="CMS entry not found")
@@ -70,7 +71,7 @@ def update_cms(cms_id: int, cms: CmsCreate, db: Session = Depends(get_db)):
     return db_cms
 
 @router.delete("/{cms_id}")
-def delete_cms(cms_id: int, db: Session = Depends(get_db)):
+def delete_cms(cms_id: int, db: Session = Depends(get_db), current_user = Depends(require_role("admin"))):
     db_cms = db.query(CmsContentEntry).filter(CmsContentEntry.id == cms_id).first()
     if db_cms is None:
         raise HTTPException(status_code=404, detail="CMS entry not found")

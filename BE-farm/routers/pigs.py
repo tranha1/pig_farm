@@ -5,6 +5,7 @@ from datetime import datetime
 from database import get_db
 from models import ProductPig
 from pydantic import BaseModel
+from .auth import get_current_active_user, require_role
 
 router = APIRouter()
 
@@ -48,7 +49,7 @@ def read_pig(pig_id: int, db: Session = Depends(get_db)):
     return pig
 
 @router.post("/", response_model=Pig)
-def create_pig(pig: PigCreate, db: Session = Depends(get_db)):
+def create_pig(pig: PigCreate, db: Session = Depends(get_db), current_user = Depends(require_role("staff"))):
     db_pig = ProductPig(**pig.dict())
     db.add(db_pig)
     db.commit()
@@ -56,7 +57,7 @@ def create_pig(pig: PigCreate, db: Session = Depends(get_db)):
     return db_pig
 
 @router.put("/{pig_id}", response_model=Pig)
-def update_pig(pig_id: int, pig: PigCreate, db: Session = Depends(get_db)):
+def update_pig(pig_id: int, pig: PigCreate, db: Session = Depends(get_db), current_user = Depends(require_role("staff"))):
     db_pig = db.query(ProductPig).filter(ProductPig.id == pig_id).first()
     if db_pig is None:
         raise HTTPException(status_code=404, detail="Pig not found")
@@ -67,7 +68,7 @@ def update_pig(pig_id: int, pig: PigCreate, db: Session = Depends(get_db)):
     return db_pig
 
 @router.delete("/{pig_id}")
-def delete_pig(pig_id: int, db: Session = Depends(get_db)):
+def delete_pig(pig_id: int, db: Session = Depends(get_db), current_user = Depends(require_role("admin"))):
     db_pig = db.query(ProductPig).filter(ProductPig.id == pig_id).first()
     if db_pig is None:
         raise HTTPException(status_code=404, detail="Pig not found")

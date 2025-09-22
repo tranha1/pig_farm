@@ -5,6 +5,7 @@ from datetime import datetime
 from database import get_db
 from models import ProductMedicine
 from pydantic import BaseModel
+from .auth import get_current_active_user, require_role
 
 router = APIRouter()
 
@@ -54,7 +55,7 @@ def read_medicine(medicine_id: int, db: Session = Depends(get_db)):
     return medicine
 
 @router.post("/", response_model=Medicine)
-def create_medicine(medicine: MedicineCreate, db: Session = Depends(get_db)):
+def create_medicine(medicine: MedicineCreate, db: Session = Depends(get_db), current_user = Depends(require_role("staff"))):
     db_medicine = ProductMedicine(**medicine.dict())
     db.add(db_medicine)
     db.commit()
@@ -62,7 +63,7 @@ def create_medicine(medicine: MedicineCreate, db: Session = Depends(get_db)):
     return db_medicine
 
 @router.put("/{medicine_id}", response_model=Medicine)
-def update_medicine(medicine_id: int, medicine: MedicineCreate, db: Session = Depends(get_db)):
+def update_medicine(medicine_id: int, medicine: MedicineCreate, db: Session = Depends(get_db), current_user = Depends(require_role("staff"))):
     db_medicine = db.query(ProductMedicine).filter(ProductMedicine.id == medicine_id).first()
     if db_medicine is None:
         raise HTTPException(status_code=404, detail="Medicine not found")
@@ -73,7 +74,7 @@ def update_medicine(medicine_id: int, medicine: MedicineCreate, db: Session = De
     return db_medicine
 
 @router.delete("/{medicine_id}")
-def delete_medicine(medicine_id: int, db: Session = Depends(get_db)):
+def delete_medicine(medicine_id: int, db: Session = Depends(get_db), current_user = Depends(require_role("admin"))):
     db_medicine = db.query(ProductMedicine).filter(ProductMedicine.id == medicine_id).first()
     if db_medicine is None:
         raise HTTPException(status_code=404, detail="Medicine not found")
