@@ -62,6 +62,8 @@ const ProductManagement = ({ type }: ProductManagementProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [detailProduct, setDetailProduct] = useState<any>(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const itemsPerPage = 6;
 
   // Queries
@@ -140,6 +142,11 @@ const ProductManagement = ({ type }: ProductManagementProps) => {
       console.error('Image upload failed:', error);
     }
     return null;
+  };
+
+  const handleViewDetail = (product: any) => {
+    setDetailProduct(product);
+    setIsDetailDialogOpen(true);
   };
 
   const handleCreate = () => {
@@ -544,7 +551,7 @@ const ProductManagement = ({ type }: ProductManagementProps) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {currentData.map((item) => (
-          <Card key={item.id} className="hover:shadow-lg transition-shadow">
+          <Card key={item.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleViewDetail(item)}>
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -602,11 +609,14 @@ const ProductManagement = ({ type }: ProductManagementProps) => {
             </CardContent>
             <CardFooter className="pt-2">
               <div className="flex space-x-2 w-full">
-                <Button variant="outline" size="sm" onClick={() => handleEdit(item)} className="flex-1">
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleViewDetail(item); }} className="flex-1">
+                  View Details
+                </Button>
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleEdit(item); }} className="flex-1">
                   <Edit className="h-4 w-4 mr-1" />
                   Edit
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleDelete(item.id)} className="flex-1">
+                <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex-1">
                   <Trash2 className="h-4 w-4 mr-1" />
                   Delete
                 </Button>
@@ -660,6 +670,154 @@ const ProductManagement = ({ type }: ProductManagementProps) => {
           </Button>
         </div>
       )}
+
+      {/* Product Detail Dialog */}
+      <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">
+              {detailProduct ? (type === "cms" ? detailProduct.title : detailProduct.name) : ""}
+            </DialogTitle>
+            <DialogDescription>
+              Product Details - ID: {detailProduct?.id}
+            </DialogDescription>
+          </DialogHeader>
+          {detailProduct && (
+            <div className="space-y-6 py-4">
+              {/* Large Image Display */}
+              <div className="w-full">
+                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden max-h-96">
+                  <ProductImage imageId={detailProduct.cover_image_id} className="w-full h-full object-contain" />
+                </div>
+                {!detailProduct.cover_image_id && (
+                  <div className="w-full h-96 flex items-center justify-center text-gray-400 bg-gray-100 rounded-lg">
+                    <ImageIcon className="h-24 w-24" />
+                    <span className="ml-2 text-lg">No image available</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Product Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Basic Information</h3>
+                    <div className="space-y-2">
+                      <p><strong>Status:</strong> <Badge variant={detailProduct.is_published ? "default" : "secondary"}>{detailProduct.is_published ? "Published" : "Draft"}</Badge></p>
+                      <p><strong>Featured:</strong> {detailProduct.is_featured ? "Yes" : "No"}</p>
+                      <p><strong>Created:</strong> {new Date(detailProduct.created_at).toLocaleDateString()}</p>
+                      <p><strong>Updated:</strong> {new Date(detailProduct.updated_at).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+
+                  {type === "pigs" && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Pig Details</h3>
+                      <div className="space-y-2">
+                        <p><strong>Name:</strong> {detailProduct.name}</p>
+                        <p><strong>Price:</strong> ${detailProduct.price || 'N/A'}</p>
+                        <p><strong>Note:</strong> {detailProduct.note || 'N/A'}</p>
+                        <p><strong>Slug:</strong> {detailProduct.slug || 'N/A'}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {type === "medicines" && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Medicine Details</h3>
+                      <div className="space-y-2">
+                        <p><strong>Name:</strong> {detailProduct.name}</p>
+                        <p><strong>Packaging:</strong> {detailProduct.packaging || 'N/A'}</p>
+                        <p><strong>Indications:</strong> {detailProduct.indications || 'N/A'}</p>
+                        <p><strong>Ingredients:</strong> {detailProduct.ingredients || 'N/A'}</p>
+                        <p><strong>Unit Price:</strong> ${detailProduct.price_unit || 'N/A'}</p>
+                        <p><strong>Total Price:</strong> ${detailProduct.price_total || 'N/A'}</p>
+                        <p><strong>Price per Dose:</strong> ${detailProduct.price_per_dose || 'N/A'}</p>
+                        <p><strong>Support Price per Dose:</strong> ${detailProduct.support_price_per_dose || 'N/A'}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {type === "cms" && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">CMS Content Details</h3>
+                      <div className="space-y-2">
+                        <p><strong>Title:</strong> {detailProduct.title}</p>
+                        <p><strong>Slug:</strong> {detailProduct.slug}</p>
+                        <p><strong>Author:</strong> {detailProduct.author_name || 'N/A'}</p>
+                        <p><strong>SEO Title:</strong> {detailProduct.seo_title || 'N/A'}</p>
+                        <p><strong>SEO Description:</strong> {detailProduct.seo_desc || 'N/A'}</p>
+                        <p><strong>Video URL:</strong> {detailProduct.video_url || 'N/A'}</p>
+                        <p><strong>External URL:</strong> {detailProduct.external_url || 'N/A'}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  {type === "cms" && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Content</h3>
+                      <div className="space-y-2">
+                        <div>
+                          <strong>Summary:</strong>
+                          <p className="mt-1 text-gray-700">{detailProduct.summary || 'No summary available'}</p>
+                        </div>
+                        <div>
+                          <strong>Body Content:</strong>
+                          <div className="mt-1 p-3 bg-gray-50 rounded border max-h-60 overflow-y-auto">
+                            {detailProduct.body_html ? (
+                              <div dangerouslySetInnerHTML={{ __html: detailProduct.body_html }} />
+                            ) : (
+                              <p className="text-gray-500">No content available</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {type === "pigs" && detailProduct.note && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Additional Notes</h3>
+                      <p className="text-gray-700">{detailProduct.note}</p>
+                    </div>
+                  )}
+
+                  {type === "medicines" && (detailProduct.indications || detailProduct.ingredients) && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Medical Information</h3>
+                      <div className="space-y-2">
+                        {detailProduct.indications && (
+                          <div>
+                            <strong>Indications:</strong>
+                            <p className="mt-1 text-gray-700">{detailProduct.indications}</p>
+                          </div>
+                        )}
+                        {detailProduct.ingredients && (
+                          <div>
+                            <strong>Ingredients:</strong>
+                            <p className="mt-1 text-gray-700">{detailProduct.ingredients}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDetailDialogOpen(false)}>
+              Close
+            </Button>
+            <Button variant="default" onClick={() => { setIsDetailDialogOpen(false); handleEdit(detailProduct); }}>
+              <Edit className="h-4 w-4 mr-1" />
+              Edit Product
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
