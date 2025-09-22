@@ -45,7 +45,7 @@ const Products = () => {
             );
         }
 
-        if (!medicinesData?.data || medicinesData.data.length === 0) {
+        if (!medicinesData || medicinesData.length === 0) {
             return (
                 <Alert>
                     <AlertDescription>
@@ -57,7 +57,7 @@ const Products = () => {
 
         return (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {medicinesData.data.map((medicine) => (
+                {medicinesData.map((medicine) => (
                     <Card key={medicine.id} className="hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle className="text-xl">{medicine.name}</CardTitle>
@@ -129,7 +129,7 @@ const Products = () => {
             );
         }
 
-        if (pigsError || !pigsData?.data || pigsData.data.length === 0) {
+        if (pigsError || !pigsData || pigsData.length === 0) {
             return null; // Don't show error for pigs, just hide the section
         }
 
@@ -139,7 +139,7 @@ const Products = () => {
                     SẢN PHẨM LỢN HIỆN CÓ
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {pigsData.data.map((pig) => (
+                    {pigsData.map((pig) => (
                         <Card key={pig.id}>
                             <CardHeader>
                                 <CardTitle className="text-xl">{pig.name}</CardTitle>
@@ -227,7 +227,7 @@ const Products = () => {
                                 </Alert>
                             )}
                             
-                            {!pigsLoading && !pigsError && (!pigsData?.data || pigsData.data.length === 0) && (
+                            {!pigsLoading && !pigsError && (!pigsData || pigsData.length === 0) && (
                                 <Alert>
                                     <AlertDescription>
                                         Hiện tại chưa có sản phẩm lợn nào được công bố.
@@ -235,9 +235,9 @@ const Products = () => {
                                 </Alert>
                             )}
                             
-                            {!pigsLoading && !pigsError && pigsData?.data && pigsData.data.length > 0 && (
+                            {!pigsLoading && !pigsError && pigsData && pigsData.length > 0 && (
                                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {pigsData.data.map((pig) => (
+                                    {pigsData.map((pig) => (
                                         <Card key={pig.id} className="hover:shadow-lg transition-shadow">
                                             <CardHeader>
                                                 <CardTitle className="text-xl">{pig.name}</CardTitle>

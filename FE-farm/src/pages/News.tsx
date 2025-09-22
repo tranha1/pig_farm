@@ -25,43 +25,32 @@ const News = () => {
 
   const fetchArticles = async (params?: NewsApiParams) => {
     try {
-      const response = await apiService.getNewsArticles({
-        published: true,
-        page_size: 12,
-        page: currentPage,
-        search: searchTerm || undefined,
-        category: (selectedCategory && selectedCategory !== "all") ? selectedCategory : undefined,
-        featured: showFeaturedOnly || undefined,
+      const data = await apiService.getNewsArticles({
+        limit: 12,
+        skip: (currentPage - 1) * 12,
         ...params
       });
 
-      if (response.status === 'success') {
-        if (params?.page === 1) {
-          setArticles(response.data);
-        } else {
-          setArticles(prev => [...prev, ...response.data]);
-        }
-        
-        if (response.pagination) {
-          setTotalPages(response.pagination.total_pages);
-        }
+      if (params?.page === 1) {
+        setArticles(data);
       } else {
-        setError(response.message || 'Failed to fetch articles');
+        setArticles(prev => [...prev, ...data]);
       }
+      
+      // For now, assume single page since we don't have pagination
+      setTotalPages(1);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error');
     }
   };
 
   const fetchCategories = async () => {
-    try {
-      const response = await apiService.getNewsCategories();
-      if (response.status === 'success') {
-        setCategories(response.data);
-      }
-    } catch (err) {
-      console.error('Error fetching categories:', err);
-    }
+    // For now, we'll use hardcoded categories since CMS doesn't have categories
+    setCategories([
+      { id: 1, name: 'Liên hệ', slug: 'contact', description: '', color: '', icon: '', parent_id: null, sort_order: 1, is_published: true, published_at: '', created_at: '', updated_at: '' },
+      { id: 2, name: 'Tin tức', slug: 'news', description: '', color: '', icon: '', parent_id: null, sort_order: 2, is_published: true, published_at: '', created_at: '', updated_at: '' },
+      { id: 3, name: 'Quy trình', slug: 'process', description: '', color: '', icon: '', parent_id: null, sort_order: 3, is_published: true, published_at: '', created_at: '', updated_at: '' }
+    ]);
   };
 
   useEffect(() => {
@@ -112,29 +101,12 @@ const News = () => {
 
   const NewsCard = ({ article }: { article: NewsArticle }) => (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
-      <Link to={`/news/${article.slug}`} className="block">
-        {article.featured_image && (
-          <div className="relative overflow-hidden">
-            <img
-              src={article.featured_image}
-              alt={article.title}
-              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            {article.is_featured && (
-              <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
-                Nổi bật
-              </Badge>
-            )}
-          </div>
-        )}
-        
+      <Link to={`/news/${article.id}`} className="block">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            {article.category_id && (
-              <Badge variant="secondary" className="text-xs">
-                {getCategoryName(article.category_id)}
-              </Badge>
-            )}
+            <Badge variant="secondary" className="text-xs">
+              {article.kind_id === 1 ? 'Liên hệ' : article.kind_id === 2 ? 'Tin tức' : 'Quy trình'}
+            </Badge>
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {formatDate(article.published_at)}
@@ -155,40 +127,20 @@ const News = () => {
         <CardContent className="pt-0">
           <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
             <div className="flex items-center gap-4">
-              {article.author && (
+              {article.author_name && (
                 <span className="flex items-center gap-1">
                   <User className="h-3 w-3" />
-                  {article.author}
+                  {article.author_name}
                 </span>
               )}
-              {article.read_time && (
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {article.read_time} phút đọc
-                </span>
-              )}
-              <span className="flex items-center gap-1">
-                <Eye className="h-3 w-3" />
-                {article.view_count}
-              </span>
             </div>
           </div>
-          
-          {article.tags && article.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {article.tags.slice(0, 3).map((tag, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
         </CardContent>
       </Link>
       
       <CardContent className="pt-0">
         <Button className="w-full" variant="outline" asChild>
-          <Link to={`/news/${article.slug}`}>
+          <Link to={`/news/${article.id}`}>
             Đọc thêm
           </Link>
         </Button>
@@ -318,9 +270,22 @@ const News = () => {
 
             {/* All Articles */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {articles.map((article) => (
-                <NewsCard key={article.id} article={article} />
-              ))}
+              {articles
+                .filter(article => {
+                  // Filter by search term
+                  if (searchTerm && !article.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
+                      !article.summary?.toLowerCase().includes(searchTerm.toLowerCase())) {
+                    return false;
+                  }
+                  // Filter by category
+                  if (selectedCategory && selectedCategory !== "all" && article.kind_id.toString() !== selectedCategory) {
+                    return false;
+                  }
+                  return true;
+                })
+                .map((article) => (
+                  <NewsCard key={article.id} article={article} />
+                ))}
             </div>
 
             {/* Load More */}

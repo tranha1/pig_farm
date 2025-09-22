@@ -28,14 +28,14 @@ export const useProductDetail = (type: 'pig' | 'medicine', id: number | undefine
   
   if (type === 'pig') {
     return {
-      product: pigQuery.data?.data,
+      product: pigQuery.data,
       loading: pigQuery.isLoading,
       error: pigQuery.error,
       type: 'pig' as const
     };
   } else {
     return {
-      product: medicineQuery.data?.data,
+      product: medicineQuery.data,
       loading: medicineQuery.isLoading,
       error: medicineQuery.error,
       type: 'medicine' as const

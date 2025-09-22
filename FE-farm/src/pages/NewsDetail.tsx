@@ -22,10 +22,10 @@ import { useNews } from "@/hooks/useNews";
 import { NewsArticle } from "@/services/api";
 
 const NewsDetail = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { article, loading, error } = useNewsDetailBySlug(slug || "");
+  const { article, loading, error } = useNewsDetail(id || "");
   const { articles: relatedArticles } = useNews(); // For related articles
 
   const formatDate = (dateString?: string) => {
