@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from urllib.parse import parse_qs, urlparse
+
+from django.core.exceptions import ImproperlyConfigured
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -85,12 +88,173 @@ WSGI_APPLICATION = "pig_farm_cms.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+
+def _normalize_engine_alias(engine: str) -> str:
+    """Translate user friendly engine aliases into Django backends."""
+
+    if not engine:
+        return engine
+
+    aliases = {
+        "postgres": "django.db.backends.postgresql",
+        "postgresql": "django.db.backends.postgresql",
+        "pgsql": "django.db.backends.postgresql",
+        "postgis": "django.contrib.gis.db.backends.postgis",
+        "sqlite": "django.db.backends.sqlite3",
+        "sqlite3": "django.db.backends.sqlite3",
+        "mysql": "django.db.backends.mysql",
+        "mysql2": "django.db.backends.mysql",
     }
-}
+    return aliases.get(engine, engine)
+
+
+def _coerce_options(options: dict[str, list[str]]) -> dict[str, str | list[str]]:
+    """Convert parsed query-string values into Django OPTIONS."""
+
+    coerced: dict[str, str | list[str]] = {}
+    for key, values in options.items():
+        if not values:
+            continue
+        coerced[key] = values[0] if len(values) == 1 else values
+    return coerced
+
+
+def _database_from_url(url: str) -> dict[str, object]:
+    parsed = urlparse(url)
+    if not parsed.scheme:
+        raise ImproperlyConfigured("DATABASE_URL must include a scheme (e.g. postgres://).")
+
+    engine = _normalize_engine_alias(parsed.scheme)
+    if not engine:
+        raise ImproperlyConfigured("DATABASE_URL must define a supported database backend.")
+
+    config: dict[str, object]
+    if engine == "django.db.backends.sqlite3":
+        path = parsed.path or ""
+        if parsed.netloc:
+            path = f"{parsed.netloc}{path}"
+
+        if not path or path == "/":
+            name = os.path.join(BASE_DIR, "db.sqlite3")
+        else:
+            if path.startswith("/") and not url.startswith("sqlite:////"):
+                name = os.path.join(BASE_DIR, path.lstrip("/"))
+            else:
+                name = path
+        config = {"ENGINE": engine, "NAME": name}
+    else:
+        name = parsed.path.lstrip("/")
+        if not name:
+            raise ImproperlyConfigured("DATABASE_URL must include a database name.")
+        config = {
+            "ENGINE": engine,
+            "NAME": name,
+            "USER": parsed.username or "",
+            "PASSWORD": parsed.password or "",
+            "HOST": parsed.hostname or "",
+            "PORT": str(parsed.port) if parsed.port else "",
+        }
+
+    query = parse_qs(parsed.query)
+    if "conn_max_age" in query:
+        value = query.pop("conn_max_age")[-1]
+        try:
+            config["CONN_MAX_AGE"] = int(value)
+        except (TypeError, ValueError) as error:
+            raise ImproperlyConfigured("conn_max_age in DATABASE_URL must be an integer.") from error
+
+    if query:
+        config["OPTIONS"] = _coerce_options(query)
+
+    return config
+
+
+def _database_from_components() -> dict[str, object]:
+    engine = _normalize_engine_alias(os.environ.get("DATABASE_ENGINE"))
+    if not engine:
+        engine = "django.db.backends.postgresql"
+
+    if engine == "django.db.backends.sqlite3":
+        name = os.environ.get("DATABASE_NAME")
+        if not name or name == ":memory:":
+            name = os.path.join(BASE_DIR, "db.sqlite3") if name is None else name
+        elif not os.path.isabs(name):
+            name = os.path.join(BASE_DIR, name)
+        return {"ENGINE": engine, "NAME": name}
+
+    config: dict[str, object] = {
+        "ENGINE": engine,
+        "NAME": os.environ.get("DATABASE_NAME")
+        or os.environ.get("POSTGRES_DB")
+        or "postgres",
+        "USER": os.environ.get("DATABASE_USER")
+        or os.environ.get("POSTGRES_USER")
+        or "postgres",
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD")
+        or os.environ.get("POSTGRES_PASSWORD")
+        or "",
+        "HOST": os.environ.get("DATABASE_HOST")
+        or os.environ.get("POSTGRES_HOST")
+        or "localhost",
+        "PORT": str(
+            os.environ.get("DATABASE_PORT")
+            or os.environ.get("POSTGRES_PORT")
+            or "5432"
+        ),
+    }
+
+    sslmode = os.environ.get("DATABASE_SSLMODE") or os.environ.get("POSTGRES_SSLMODE")
+    sslrootcert = os.environ.get("DATABASE_SSLROOTCERT") or os.environ.get("POSTGRES_SSLROOTCERT")
+    options: dict[str, str] = {}
+    if sslmode:
+        options["sslmode"] = sslmode
+    if sslrootcert:
+        options["sslrootcert"] = sslrootcert
+    if options:
+        config["OPTIONS"] = options
+
+    conn_max_age = os.environ.get("DATABASE_CONN_MAX_AGE")
+    if conn_max_age:
+        try:
+            config["CONN_MAX_AGE"] = int(conn_max_age)
+        except ValueError as error:
+            raise ImproperlyConfigured(
+                "DATABASE_CONN_MAX_AGE must be set to an integer value if provided."
+            ) from error
+
+    return config
+
+
+def _build_default_database() -> dict[str, object]:
+    database_url = os.environ.get("DATABASE_URL")
+    if database_url:
+        return _database_from_url(database_url)
+
+    django_env = (os.environ.get("DJANGO_ENV") or "development").lower()
+    if django_env in {"", "development", "dev", "local"}:
+        overrides = {
+            "DATABASE_ENGINE",
+            "DATABASE_NAME",
+            "DATABASE_USER",
+            "DATABASE_PASSWORD",
+            "DATABASE_HOST",
+            "DATABASE_PORT",
+            "POSTGRES_DB",
+            "POSTGRES_USER",
+            "POSTGRES_PASSWORD",
+            "POSTGRES_HOST",
+            "POSTGRES_PORT",
+        }
+        if not any(key in os.environ for key in overrides):
+            return {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+            }
+
+    return _database_from_components()
+
+
+DATABASES = {"default": _build_default_database()}
 
 
 # Password validation
