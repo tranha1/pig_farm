@@ -17,6 +17,13 @@ from urllib.parse import parse_qs, urlparse
 
 from django.core.exceptions import ImproperlyConfigured
 
+
+def _env_int(setting_name: str, default: int) -> int:
+    try:
+        return int(os.environ.get(setting_name, default))
+    except (TypeError, ValueError):
+        return int(default)
+
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
@@ -58,6 +65,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "pig_farm_cms.middleware.LargeFormSubmissionControlMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
@@ -318,9 +326,42 @@ STORAGES = {
     },
 }
 
-# Django sets a maximum of 1000 fields per form by default, but particularly complex page models
-# can exceed this limit within Wagtail's page editor.
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
+# Django sets a maximum of 1000 fields per form by default. Our current Wagtail page
+# implementations are considerably smaller than that value, but we still provide headroom
+# for future growth via configuration.
+DATA_UPLOAD_MAX_NUMBER_FIELDS = max(1, _env_int("DATA_UPLOAD_MAX_NUMBER_FIELDS", 2_000))
+
+# Requests that submit more than this number of fields must already be authenticated when
+# they target protected endpoints. This prevents anonymous users from leveraging the higher
+# global limit for abuse.
+ANONYMOUS_MAX_FORM_FIELDS = _env_int("ANONYMOUS_MAX_FORM_FIELDS", 500)
+ANONYMOUS_MAX_FORM_FIELDS = max(
+    0,
+    min(ANONYMOUS_MAX_FORM_FIELDS, DATA_UPLOAD_MAX_NUMBER_FIELDS),
+)
+
+_default_log_threshold = max(
+    ANONYMOUS_MAX_FORM_FIELDS,
+    int(DATA_UPLOAD_MAX_NUMBER_FIELDS * 0.75),
+)
+_default_log_threshold = min(_default_log_threshold, DATA_UPLOAD_MAX_NUMBER_FIELDS)
+
+# Large submissions that stay within the allowed limits are still logged so that operations
+# teams can monitor for suspicious spikes.
+LARGE_FORM_LOG_THRESHOLD = max(
+    1,
+    min(_env_int("LARGE_FORM_LOG_THRESHOLD", _default_log_threshold), DATA_UPLOAD_MAX_NUMBER_FIELDS),
+)
+
+_protected_prefixes_env = os.environ.get(
+    "LARGE_FORM_PROTECTED_PATH_PREFIXES",
+    "/admin/,/django-admin/",
+)
+LARGE_FORM_PROTECTED_PATH_PREFIXES = tuple(
+    prefix.strip()
+    for prefix in _protected_prefixes_env.split(",")
+    if prefix.strip()
+)
 
 
 # Wagtail settings
@@ -343,23 +384,29 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 # This can be omitted to allow all files, but note that this may present a security risk
 # if untrusted users are allowed to upload files -
 # see https://docs.wagtail.org/en/stable/advanced_topics/deploying.html#user-uploaded-files
-WAGTAILDOCS_EXTENSIONS = [
-    "csv",
-    "docx",
-    "key",
-    "odt",
-    "pdf",
-    "pptx",
-    "rtf",
-    "txt",
-    "xlsx",
-]
+
+=======
+WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
 
 
-# Archive handling
-DOCUMENT_ARCHIVE_MAX_MEMBER_SIZE = 20 * 1024 * 1024  # 20 MB per extracted file
-DOCUMENT_ARCHIVE_MAX_COMPRESSION_RATIO = 100
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "pig_farm.security": {
+            "handlers": ["console"],
+            "level": os.environ.get("PIG_FARM_SECURITY_LOG_LEVEL", "INFO"),
+        },
+        "django.security.SuspiciousOperation": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+}
 
-_scan_command = os.environ.get("DOCUMENT_ARCHIVE_SCAN_COMMAND", "").strip()
-DOCUMENT_ARCHIVE_SCAN_COMMAND = shlex.split(_scan_command) if _scan_command else None
-DOCUMENT_ARCHIVE_SCAN_SUCCESS_CODES = {0}
