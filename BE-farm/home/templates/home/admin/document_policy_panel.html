@@ -1,0 +1,23 @@
+{% load i18n %}
+<div class="w-panel w-panel--no-border">
+  <div class="w-panel__header">
+    <h2 class="w-heading">{% trans "Document upload security update" %}</h2>
+  </div>
+  <div class="w-panel__content">
+    <p>
+      {% blocktrans %}Archive files such as ZIPs are currently blocked from upload. Please upload supported document formats directly: {{ allowed_extensions }}.{% endblocktrans %}
+    </p>
+    <p>
+      {% blocktrans %}If you must distribute multiple files, combine them into a single PDF or contact the security team to arrange a reviewed transfer.{% endblocktrans %}
+    </p>
+    {% if archive_scan_enabled %}
+      <p class="w-help-text">
+        {% blocktrans %}When archive uploads are re-enabled they will be scanned automatically before being stored.{% endblocktrans %}
+      </p>
+    {% else %}
+      <p class="w-help-text">
+        {% blocktrans %}Archive uploads will remain disabled until automated antivirus scanning is configured.{% endblocktrans %}
+      </p>
+    {% endif %}
+  </div>
+</div>

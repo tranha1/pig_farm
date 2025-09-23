@@ -46,3 +46,9 @@ pg_restore --clean --no-owner --dbname "$TARGET_DATABASE_URL" backup.dump
 ```
 
 Always run `python manage.py migrate --noinput` after restoring to ensure schema changes are applied.
+
+## Document upload security policy
+
+- Only the following document types are accepted by default: `csv`, `docx`, `key`, `odt`, `pdf`, `pptx`, `rtf`, `txt`, and `xlsx`.
+- Archive formats (for example ZIP files) are blocked until automated antivirus scanning is configured. Editors should upload supported document formats directly through Wagtail.
+- If a reviewed archive transfer is required, provide the files to the security team so they can process them through the antivirus workflow before uploading to the CMS.
